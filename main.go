@@ -8,9 +8,11 @@ import (
 )
 
 func main() {
+	fmt.Println("Running Hub Server")
+	go h.run()
 	r := gin.Default()
 	r.LoadHTMLFiles("index.html")
-
+	r.Static("static", "static")
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(200, "index.html", nil)
 	})
@@ -28,15 +30,10 @@ var wsupgrader = websocket.Upgrader{
 func wshandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := wsupgrader.Upgrade(w, r, nil)
 	if err != nil {
-		fmt.Println("Failed to set websocket upgrade: %+v", err)
-		return
+		fmt.Println(err)
 	}
-
-	for {
-		t, msg, err := conn.ReadMessage()
-		if err != nil {
-			break
-		}
-		conn.WriteMessage(t, msg)
-	}
+	c := &connection{send: make(chan []byte, 256), ws: conn}
+	h.register <- c
+	go c.writePump()
+	c.readPump()
 }
