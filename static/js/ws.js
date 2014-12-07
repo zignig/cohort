@@ -8,10 +8,15 @@
       c.onmessage = function(msg){
 		//$("#output").append((new Date())+ " <== "+msg.data+"\n")
         console.log(msg.data);
-		
+		switch(msg.data["class"]){
+			case "loader":
+				// load object
+				console.log(msg.data["message"])
+				break;
+		}
 		var loader = new THREE.ColladaLoader();
 		loader.options.convertUpAxis = true;
-		loader.load( '/static/models/monkey.dae', function ( collada ) {
+		loader.load( '/static/models/batbuddah.dae', function ( collada ) {
 			dae = collada.scene;
 			dae.traverse( function ( child ) {
 
@@ -24,7 +29,7 @@
 
 				} );
 			//dae.scale.x = dae.scale.y = dae.scale.z = 0.02;
-			dae.scale.x = dae.scale.y = dae.scale.z = 5;
+			dae.scale.x = dae.scale.y = dae.scale.z = 1;
 			dae.position.z = -20
 			dae.updateMatrix();
 			scene.add(dae);

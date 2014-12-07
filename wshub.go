@@ -11,11 +11,12 @@ import (
 type playMessage struct {
 	Class   string          `json:"class"`
 	Message json.RawMessage `json:"message"`
+	Data    interface{}
 }
 
-func (*playMessage) Decode(m []byte) {
+func (pm *playMessage) Decode(m []byte) {
 	var dst interface{}
-	pm := &playMessage{}
+	//pm := &playMessage{}
 	err := json.Unmarshal(m, pm)
 	if err != nil {
 		fmt.Println("base decode ", err)
@@ -29,10 +30,11 @@ func (*playMessage) Decode(m []byte) {
 		}
 	}
 	err = json.Unmarshal(pm.Message, dst)
+	pm.Data = dst
 	if err != nil {
 		fmt.Println("message error ", err)
 	}
-	fmt.Println(dst)
+	//fmt.Println(dst)
 }
 
 // player hub
@@ -60,16 +62,16 @@ func (c *connection) readPump() {
 	c.ws.SetReadLimit(maxMessageSize)
 	c.ws.SetReadDeadline(time.Now().Add(pongWait))
 	c.ws.SetPongHandler(func(string) error { c.ws.SetReadDeadline(time.Now().Add(pongWait)); return nil })
-	m := new(playMessage)
+	m := &playMessage{}
 	for {
 		_, message, err := c.ws.ReadMessage()
 		if err != nil {
 			break
 		}
 
-		fmt.Println(string(message))
+		//fmt.Println(string(message))
 		m.Decode(message)
-		fmt.Println(m)
+		fmt.Println(m.Data)
 		//h.broadcast <- message
 	}
 }

@@ -8,7 +8,7 @@ import (
 )
 
 type universe struct {
-	w *world
+	w *World
 	h *hub
 }
 

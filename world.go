@@ -8,7 +8,8 @@ import (
 
 // make a world sectors * sectors big
 
-const sectors = 8
+const Sectors = 8
+const SectorSize = 256
 
 // 3 vector
 // look for some math libs for V3
@@ -40,9 +41,9 @@ type gridStatus struct {
 
 func NewGridStatus() *gridStatus {
 	gs := &gridStatus{}
-	grid := make([][]bool, sectors)
+	grid := make([][]bool, Sectors)
 	for i := range grid {
-		grid[i] = make([]bool, sectors)
+		grid[i] = make([]bool, Sectors)
 	}
 	gs.grid = grid
 	fmt.Println(gs)
@@ -63,23 +64,25 @@ type entity struct {
 	pos  V3
 }
 
-type sector struct {
+type Sector struct {
 	ref   string
 	owner string
 	ents  []*entity
 }
 
-type world struct {
-	players []player
-	grid    [][]*sector
+type World struct {
+	players []*player
+	grid    [][]*Sector
+	status  *gridStatus
 }
 
-func NewWorld() *world {
-	w := &world{}
-	grid := make([][]*sector, sectors)
+func NewWorld() *World {
+	w := &World{}
+	grid := make([][]*Sector, Sectors)
 	for i := range grid {
-		grid[i] = make([]*sector, sectors)
+		grid[i] = make([]*Sector, Sectors)
 	}
 	w.grid = grid
+	w.status = NewGridStatus()
 	return w
 }
