@@ -7,8 +7,15 @@ import (
 	"net/http"
 )
 
+type universe struct {
+	w *world
+	h *hub
+}
+
 func main() {
 	fmt.Println("Running Hub Server")
+	w := NewWorld()
+	fmt.Println(w)
 	go h.run()
 	r := gin.Default()
 	r.LoadHTMLFiles("index.html")

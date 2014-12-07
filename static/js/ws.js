@@ -7,11 +7,11 @@
 
       c.onmessage = function(msg){
 		//$("#output").append((new Date())+ " <== "+msg.data+"\n")
-        console.log(msg);
+        console.log(msg.data);
 		
 		var loader = new THREE.ColladaLoader();
 		loader.options.convertUpAxis = true;
-		loader.load( '/static/models/monster.dae', function ( collada ) {
+		loader.load( '/static/models/monkey.dae', function ( collada ) {
 			dae = collada.scene;
 			dae.traverse( function ( child ) {
 
@@ -23,8 +23,9 @@
 					}
 
 				} );
-			dae.scale.x = dae.scale.y = dae.scale.z = 0.02;
-			dae.position.z = 50;
+			//dae.scale.x = dae.scale.y = dae.scale.z = 0.02;
+			dae.scale.x = dae.scale.y = dae.scale.z = 5;
+			dae.position.z = -20
 			dae.updateMatrix();
 			scene.add(dae);
 		} );
@@ -33,6 +34,6 @@
 
       c.onopen = function(){
         setInterval( 
-          function(){ send(JSON.stringify({"pos":controls.getObject().position,"rot":controls.getObject().quaternion,"id":controls.getObject().uuid}))}
+          function(){ send(JSON.stringify({"class":"location","message":{"pos":controls.getObject().position,"rot":controls.getObject().quaternion,"uuid":controls.getObject().uuid}}))}
         , 100 )
       }
