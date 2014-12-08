@@ -18,6 +18,11 @@ type Cache struct {
 	lock   sync.Mutex
 }
 
+func NewCache() *Cache {
+	c := &Cache{}
+	return c
+}
+
 type DummyCache struct {
 	path  string
 	local map[string][]byte

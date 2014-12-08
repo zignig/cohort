@@ -6,21 +6,36 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/zignig/viewer/assets"
 )
 
 type universe struct {
 	w *World
 	h *hub
+	c *assets.Cache
+}
+
+func AndLetThereBeLight() *universe {
+	fmt.Println("FATOOOOMPSH")
+	u := &universe{}
+	u.w = NewWorld()
+	u.c = assets.NewCache()
+	return u
+}
+
+func (u *universe) String() (s string) {
+	return "REALLY BIG"
 }
 
 var world = &World{}
 
 func main() {
 	fmt.Println("Running Hub Server")
-	world = NewWorld()
-	fmt.Println(world)
+	u := AndLetThereBeLight()
+	fmt.Println(u)
 	go h.run()
-	go world.run()
+	go u.w.run()
+
 	r := gin.Default()
 	r.LoadHTMLFiles("index.html")
 	r.Static("static", "static")
@@ -52,7 +67,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	}
 	c := &connection{send: make(chan []byte, 256), ws: conn}
 	h.register <- c
-	world.register <- c
+	//world.register <- c
 	// todo  , move this to write pump and push a new player
 	go c.writePump()
 	c.readPump()
