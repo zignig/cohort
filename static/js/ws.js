@@ -1,4 +1,4 @@
-      url = 'ws://localhost:8090/ws';
+      url = 'ws://'+window.location.origin+'/ws';
       c = new WebSocket(url);
       
       send = function(data){
@@ -16,7 +16,7 @@
 		}
 		var loader = new THREE.ColladaLoader();
 		loader.options.convertUpAxis = true;
-		loader.load( '/static/models/batbuddah.dae', function ( collada ) {
+		loader.load( '/static/models/monster.dae', function ( collada ) {
 			dae = collada.scene;
 			dae.traverse( function ( child ) {
 
