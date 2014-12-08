@@ -1,6 +1,6 @@
       url = 'ws://'+location.host+'/ws';
       c = new WebSocket(url);
-      
+      var interval ; 
       send = function(data){
         c.send(data)
       }
@@ -16,7 +16,7 @@
 		}
 		var loader = new THREE.ColladaLoader();
 		loader.options.convertUpAxis = true;
-		loader.load( '/static/models/monkey.dae', function ( collada ) {
+		loader.load( '/static/models/pyramid.dae', function ( collada ) {
 			dae = collada.scene;
 			dae.traverse( function ( child ) {
 
@@ -38,7 +38,11 @@
       }
 
       c.onopen = function(){
-        setInterval( 
+        interval = setInterval( 
           function(){ send(JSON.stringify({"class":"location","message":{"pos":controls.getObject().position,"rot":controls.getObject().quaternion,"uuid":controls.getObject().uuid}}))}
         , 20)
       }
+      
+	c.onlcose = function(){
+		clearInterval(interval);
+	}

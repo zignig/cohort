@@ -1,8 +1,6 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // world structures
 
@@ -75,6 +73,9 @@ type World struct {
 	grid     [][]*Sector
 	status   *gridStatus
 	register chan *connection
+	// cache for assets
+
+	cache assets.Cache
 }
 
 func NewWorld() *World {

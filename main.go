@@ -46,6 +46,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	c := &connection{send: make(chan []byte, 256), ws: conn}
 	h.register <- c
 	world.register <- c
+	// todo  , move this to write pump and push a new player
 	go c.writePump()
 	c.readPump()
 }
