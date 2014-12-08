@@ -71,9 +71,10 @@ type Sector struct {
 }
 
 type World struct {
-	players []*player
-	grid    [][]*Sector
-	status  *gridStatus
+	players  map[*player]bool
+	grid     [][]*Sector
+	status   *gridStatus
+	register chan *connection
 }
 
 func NewWorld() *World {
@@ -84,5 +85,18 @@ func NewWorld() *World {
 	}
 	w.grid = grid
 	w.status = NewGridStatus()
+	w.register = make(chan *connection)
 	return w
+}
+
+func (w *World) run() {
+	for {
+		select {
+		case c := <-w.register:
+			fmt.Println("new world registration")
+			//w.players[c] = true
+			c.send <- []byte("fnordy fnord fnord fnord")
+		}
+	}
+
 }

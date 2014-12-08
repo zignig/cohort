@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"net/http"
 )
 
 type universe struct {
@@ -12,11 +13,14 @@ type universe struct {
 	h *hub
 }
 
+var world = &World{}
+
 func main() {
 	fmt.Println("Running Hub Server")
-	w := NewWorld()
-	fmt.Println(w)
+	world = NewWorld()
+	fmt.Println(world)
 	go h.run()
+	go world.run()
 	r := gin.Default()
 	r.LoadHTMLFiles("index.html")
 	r.Static("static", "static")
@@ -41,6 +45,7 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 	}
 	c := &connection{send: make(chan []byte, 256), ws: conn}
 	h.register <- c
+	world.register <- c
 	go c.writePump()
 	c.readPump()
 }
