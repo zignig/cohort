@@ -30,7 +30,14 @@ func main() {
 	r.GET("/ws", func(c *gin.Context) {
 		wshandler(c.Writer, c.Request)
 	})
+	r.GET("/asset/*path", asset)
 	r.Run(":8090")
+}
+
+func asset(c *gin.Context) {
+	// send to asset manager
+	path := c.Params.ByName("path")
+	c.String(200, path)
 }
 
 var wsupgrader = websocket.Upgrader{
