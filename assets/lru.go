@@ -1,4 +1,6 @@
 /*
+Modified
+
 Copyright 2013 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +19,10 @@ limitations under the License.
 // Package lru implements an LRU cache.
 package assets
 
-import "container/list"
+import (
+	"container/list"
+	"sync"
+)
 
 // Lru is an LRU cache. It is not safe for concurrent access.
 type Lru struct {
@@ -25,6 +30,8 @@ type Lru struct {
 	// an item is evicted. Zero means no limit.
 	MaxEntries int
 	MaxSize    int64
+	lock       sync.Mutex
+
 	// OnEvicted optionally specificies a callback function to be
 	// executed when an entry is purged from the cache.
 	OnEvicted func(key Key, value interface{})
@@ -38,13 +45,13 @@ type Key interface{}
 
 type entry struct {
 	key   Key
-	value interface{}
+	value dataBlock
 }
 
 // New creates a new Lru.
 // If maxEntries is zero, the cache has no limit and it's assumed
 // that eviction is done by the caller.
-func New(maxEntries int) *Lru {
+func NewLru(maxEntries int) *Lru {
 	return &Lru{
 		MaxEntries: maxEntries,
 		ll:         list.New(),
@@ -53,14 +60,16 @@ func New(maxEntries int) *Lru {
 }
 
 // Add adds a value to the cache.
-func (c *Lru) Add(key Key, value interface{}) {
+func (c *Lru) Add(key Key, value dataBlock) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
 	if c.cache == nil {
 		c.cache = make(map[interface{}]*list.Element)
 		c.ll = list.New()
 	}
 	if ee, ok := c.cache[key]; ok {
 		c.ll.MoveToFront(ee)
-		ee.Value.(*entry).value = value
+		value = ee.Value.(dataBlock)
 		return
 	}
 	ele := c.ll.PushFront(&entry{key, value})
@@ -71,7 +80,7 @@ func (c *Lru) Add(key Key, value interface{}) {
 }
 
 // Get looks up a key's value from the cache.
-func (c *Lru) Get(key Key) (value interface{}, ok bool) {
+func (c *Lru) Get(key Key) (value dataBlock, ok bool) {
 	if c.cache == nil {
 		return
 	}

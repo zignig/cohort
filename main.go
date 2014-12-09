@@ -43,16 +43,20 @@ func main() {
 		c.HTML(200, "index.html", nil)
 	})
 	r.GET("/ws", func(c *gin.Context) {
-		wshandler(c.Writer, c.Request)
+		u.wshandler(c.Writer, c.Request)
 	})
-	r.GET("/asset/*path", asset)
+	r.GET("/asset/*path", u.asset)
 	r.Run(":8090")
 }
 
-func asset(c *gin.Context) {
+func (u *universe) asset(c *gin.Context) {
 	// send to asset manager
 	path := c.Params.ByName("path")
-	c.String(200, path)
+	data, err := u.c.Cat(path)
+	if err != nil {
+		c.String(500, err.Error())
+	}
+	c.Data(200, "", data)
 }
 
 var wsupgrader = websocket.Upgrader{
@@ -60,7 +64,7 @@ var wsupgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-func wshandler(w http.ResponseWriter, r *http.Request) {
+func (u *universe) wshandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := wsupgrader.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Println(err)

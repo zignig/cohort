@@ -13,24 +13,25 @@ import (
 const (
 	api      = "/api/v0/"
 	ipfsHost = "localhost:5001"
-	Max      = 400
+	Max      = 46 // investigate byte limit
 )
 
 type Caches interface {
 	Get(s string) []byte
 }
 
+type dataBlock []byte
+
 type Cache struct {
 	name   string
 	origin string
-	local  map[string][]byte
 	lock   sync.Mutex
 	lru    *Lru
 }
 
 func NewCache() *Cache {
 	c := &Cache{}
-	c.lru = New(Max)
+	c.lru = NewLru(Max)
 	return c
 }
 
@@ -75,8 +76,24 @@ func (c *Cache) Diag() (data []byte, err error) {
 	return diag, err
 }
 
+func (c *Cache) Cat(s string) (data dataBlock, err error) {
+	val, ok := c.lru.Get(s)
+	if !ok {
+		// not in cache
+		data, err = c.Get("cat", s)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println("add to cache", s)
+		c.lru.Add(s, data)
+		return data, nil
+	}
+	fmt.Println("in cache ", s)
+	return val, nil
+}
+
 // get an object from the cache
-func (c *Cache) Get(s string, a string) (data []byte, err error) {
+func (c *Cache) Get(s string, a string) (data dataBlock, err error) {
 	fmt.Println(s)
 	resp, err := c.Req(s, a)
 	data, err = ioutil.ReadAll(resp.Body)
@@ -84,7 +101,7 @@ func (c *Cache) Get(s string, a string) (data []byte, err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%s", data)
+	//fmt.Printf("%s", data)
 	return data, err
 }
 
