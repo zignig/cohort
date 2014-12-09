@@ -13,6 +13,7 @@ import (
 const (
 	api      = "/api/v0/"
 	ipfsHost = "localhost:5001"
+	Max      = 400
 )
 
 type Caches interface {
@@ -24,10 +25,12 @@ type Cache struct {
 	origin string
 	local  map[string][]byte
 	lock   sync.Mutex
+	lru    *Lru
 }
 
 func NewCache() *Cache {
 	c := &Cache{}
+	c.lru = New(Max)
 	return c
 }
 
@@ -59,6 +62,11 @@ func (c *Cache) Req(path string, arg string) (resp *http.Response, err error) {
 // like this /api/v0/name/resolve?arg=QmZXxbfUdRYi578pectWLFNFv5USQrsXdYAGeCsMJ6X8Zt&encoding=json
 func (c *Cache) Resolve(name string) (data []byte, err error) {
 	data, err = c.Get("name/resolve", name)
+	return data, err
+}
+
+func (c *Cache) Ls(name string) (data []byte, err error) {
+	data, err = c.Get("ls", name)
 	return data, err
 }
 
