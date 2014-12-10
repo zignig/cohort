@@ -16,7 +16,7 @@
 		}
 		var loader = new THREE.ColladaLoader();
 		loader.options.convertUpAxis = true;
-		loader.load( 'asset/QmZKzYD8cJanTipCniJbYu85iUC7xEaFQhpzWcquwJKaY7/batbuddah.dae', function ( collada ) {
+		loader.load( 'asset/QmZKzYD8cJanTipCniJbYu85iUC7xEaFQhpzWcquwJKaY7/monkey.dae', function ( collada ) {
 			dae = collada.scene;
 			dae.traverse( function ( child ) {
 

@@ -20,6 +20,7 @@ func TestCache(t *testing.T) {
 	fmt.Println(string(st))
 	//c.Ls("QmUF6m34MsroeoR1atFHKGbFJLXYsT8othxf3LdsUXpGdt")
 	c.Ls("QmZKzYD8cJanTipCniJbYu85iUC7xEaFQhpzWcquwJKaY7")
+	export()
 
 	//c.Ls("Qmeq1j9dwd3xYBe6D6Qtrvvbr6DXF3diKLvbS2ApBb1T6j")
 	//c.Cat("QmTJK6iE6hhBXCYAReV9ftQVnY8eTkyWcQMF5cQiSyD2ty")
