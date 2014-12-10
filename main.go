@@ -7,12 +7,16 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/zignig/viewer/assets"
+	"github.com/zignig/viewer/util"
 )
 
+var conf util.Config
+
 type universe struct {
-	w *World
-	h *hub
-	c *assets.Cache
+	conf *util.Config
+	w    *World
+	h    *hub
+	c    *assets.Cache
 }
 
 func AndLetThereBeLight() *universe {
@@ -31,7 +35,9 @@ var world = &World{}
 
 func main() {
 	fmt.Println("Running Hub Server")
+	conf := util.GetConfig("universe.toml")
 	u := AndLetThereBeLight()
+	u.conf = conf
 	fmt.Println(u)
 	go h.run()
 	go u.w.run()
