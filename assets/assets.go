@@ -1,6 +1,7 @@
 package assets
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -21,6 +22,7 @@ type Caches interface {
 }
 
 type dataBlock []byte
+type Ref string
 
 type Cache struct {
 	name   string
@@ -61,9 +63,22 @@ func (c *Cache) Req(path string, arg string) (resp *http.Response, err error) {
 }
 
 // like this /api/v0/name/resolve?arg=QmZXxbfUdRYi578pectWLFNFv5USQrsXdYAGeCsMJ6X8Zt&encoding=json
-func (c *Cache) Resolve(name string) (data []byte, err error) {
-	data, err = c.Get("name/resolve", name)
-	return data, err
+func (c *Cache) Resolve(name string) (ref string, err error) {
+	data, err := c.Get("name/resolve", name)
+	if err != nil {
+		fmt.Println("resolve error ", err)
+		return "", err
+	}
+	var refObj *Ref
+	fmt.Println("start unmarshall")
+	merr := json.Unmarshal(data, &refObj)
+	fmt.Println(string(data))
+	if merr != nil {
+		fmt.Println("unmarshall error ", merr)
+		return "", err
+	}
+	ref = string(*refObj)
+	return ref, err
 }
 
 func (c *Cache) Ls(name string) (data []byte, err error) {
@@ -96,6 +111,7 @@ func (c *Cache) Cat(s string) (data dataBlock, err error) {
 func (c *Cache) Get(s string, a string) (data dataBlock, err error) {
 	fmt.Println(s)
 	resp, err := c.Req(s, a)
+	fmt.Println(resp.Status)
 	data, err = ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 	if err != nil {

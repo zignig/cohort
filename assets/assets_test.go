@@ -17,9 +17,12 @@ func TestCache(t *testing.T) {
 	if err != nil {
 		fmt.Println("FAIL resolve")
 	}
+	fmt.Println(st)
+	data, err := c.Ls(st)
+	fmt.Println(string(data))
 	// TODO need to decode json stuff in assets ( dodj hack )
-	d, e := c.Ls(string(st[1 : len(st)-1]))
-	fmt.Println(string(d), e)
+	//d, e := c.Ls(string(st[1 : len(st)-1]))
+	//fmt.Println(string(d), e)
 
 	// import export struct tests
 	//export()

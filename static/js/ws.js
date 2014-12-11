@@ -29,8 +29,8 @@
 
 				} );
 			//dae.scale.x = dae.scale.y = dae.scale.z = 0.02;
-			dae.scale.x = dae.scale.y = dae.scale.z = 1;
-			dae.position.z = -20
+			dae.scale.x = dae.scale.y = dae.scale.z = 0.25;
+			dae.position.z = -50
 			dae.updateMatrix();
 			scene.add(dae);
 		} );

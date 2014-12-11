@@ -13,17 +13,18 @@ import (
 var conf util.Config
 
 type universe struct {
-	conf *util.Config
-	w    *World
-	h    *hub
-	c    *assets.Cache
+	conf  *util.Config
+	world *World
+	h     *hub
+	cache *assets.Cache
 }
 
-func AndLetThereBeLight() *universe {
+func AndLetThereBeLight(config *util.Config) *universe {
 	fmt.Println("FATOOOOMPSH")
 	u := &universe{}
-	u.w = NewWorld()
-	u.c = assets.NewCache()
+	u.conf = config
+	u.cache = assets.NewCache()
+	u.world = NewWorld(config, u.cache)
 	return u
 }
 
@@ -31,16 +32,14 @@ func (u *universe) String() (s string) {
 	return "REALLY BIG"
 }
 
-var world = &World{}
-
 func main() {
 	fmt.Println("Running Hub Server")
 	conf := util.GetConfig("universe.toml")
-	u := AndLetThereBeLight()
+	u := AndLetThereBeLight(conf)
 	u.conf = conf
 	fmt.Println(u)
 	go h.run()
-	go u.w.run()
+	go u.world.run()
 
 	r := gin.Default()
 	r.LoadHTMLFiles("index.html")
@@ -58,7 +57,7 @@ func main() {
 func (u *universe) asset(c *gin.Context) {
 	// send to asset manager
 	path := c.Params.ByName("path")
-	data, err := u.c.Cat(path)
+	data, err := u.cache.Cat(path)
 	if err != nil {
 		c.String(500, err.Error())
 	}

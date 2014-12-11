@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/zignig/viewer/assets"
+	"github.com/zignig/viewer/util"
 )
 
 // world structures
@@ -79,10 +81,12 @@ type World struct {
 	register chan *connection
 	// cache for assets
 
-	cache assets.Cache
+	cache  *assets.Cache
+	config *util.Config
+	ref    string
 }
 
-func NewWorld() *World {
+func NewWorld(config *util.Config, cache *assets.Cache) *World {
 	w := &World{}
 	grid := make([][]*Sector, Sectors)
 	for i := range grid {
@@ -91,12 +95,21 @@ func NewWorld() *World {
 	w.grid = grid
 	w.status = NewGridStatus()
 	w.register = make(chan *connection)
+	w.config = config
+	w.cache = cache
+	w.ref = config.Ref
 	return w
 }
 
 func (w *World) run() {
+	d, e := w.cache.Resolve(w.ref)
+	fmt.Println(string(d), e)
+	ticker := time.NewTicker(time.Second * 5).C
 	for {
 		select {
+		case <-ticker:
+			fmt.Println(time.Now())
+			// run world updater from here.
 		case c := <-w.register:
 			fmt.Println("new world registration")
 			//w.players[c] = true
