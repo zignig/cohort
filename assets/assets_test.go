@@ -7,18 +7,23 @@ import (
 	//"net/http"
 	"fmt"
 	"testing"
+
+	"github.com/zignig/viewer/util"
 )
 
 func TestCache(t *testing.T) {
+	conf := util.GetConfig("../universe.toml")
+	baseRef := conf.Ref
+	fmt.Println(conf)
 	c := NewCache()
 	fmt.Println(c)
 	//c.Diag()
-	st, err := c.Resolve("QmZXxbfUdRYi578pectWLFNFv5USQrsXdYAGeCsMJ6X8Zt")
+	st, err := c.Resolve(baseRef)
 	if err != nil {
 		fmt.Println("FAIL resolve")
 	}
 	fmt.Println(st)
-	data, err := c.Ls(st)
+	data, err := c.Cat(st + "/" + conf.Path)
 	fmt.Println(string(data))
 	// TODO need to decode json stuff in assets ( dodj hack )
 	//d, e := c.Ls(string(st[1 : len(st)-1]))
