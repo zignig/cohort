@@ -24,6 +24,11 @@ type WorldStore struct {
 	Grid  [][]Reference
 }
 
+func LoadWorldStore(data []byte) (ws *WorldStore, err error) {
+	err = json.Unmarshal(data, &ws)
+	return ws, err
+}
+
 func NewWorldStore() *WorldStore {
 	ws := &WorldStore{}
 	grid := make([][]Reference, Sectors)

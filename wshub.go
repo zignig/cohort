@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/zignig/viewer/world"
 )
 
 // message from player
@@ -26,7 +27,7 @@ func (pm *playMessage) Decode(m []byte) {
 	switch pm.Class {
 	case "location":
 		{
-			dst = &PosMessage{}
+			dst = &world.PosMessage{}
 			//fmt.Println("got location ", string(pm.Message))
 		}
 	}

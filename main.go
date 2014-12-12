@@ -6,31 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"github.com/zignig/viewer/assets"
 	"github.com/zignig/viewer/util"
 )
 
 var conf util.Config
-
-type universe struct {
-	conf  *util.Config
-	world *World
-	h     *hub
-	cache *assets.Cache
-}
-
-func AndLetThereBeLight(config *util.Config) *universe {
-	fmt.Println("FATOOOOMPSH")
-	u := &universe{}
-	u.conf = config
-	u.cache = assets.NewCache()
-	u.world = NewWorld(config, u.cache)
-	return u
-}
-
-func (u *universe) String() (s string) {
-	return "REALLY BIG"
-}
 
 func main() {
 	fmt.Println("Running Hub Server")
@@ -39,7 +18,7 @@ func main() {
 	u.conf = conf
 	fmt.Println(u)
 	go h.run()
-	go u.world.run()
+	go u.world.Run()
 
 	r := gin.Default()
 	r.LoadHTMLFiles("index.html")

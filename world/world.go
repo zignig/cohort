@@ -1,4 +1,4 @@
-package main
+package world
 
 import (
 	"fmt"
@@ -75,10 +75,10 @@ type Sector struct {
 }
 
 type World struct {
-	players  map[*player]bool
-	grid     [][]*Sector
-	status   *gridStatus
-	register chan *connection
+	players map[*player]bool
+	grid    [][]*Sector
+	status  *gridStatus
+	//register chan *connection
 	// cache for assets
 
 	cache  *assets.Cache
@@ -94,14 +94,18 @@ func NewWorld(config *util.Config, cache *assets.Cache) *World {
 	}
 	w.grid = grid
 	w.status = NewGridStatus()
-	w.register = make(chan *connection)
+	//w.register = make(chan *connection)
 	w.config = config
 	w.cache = cache
 	w.ref = config.Ref
 	return w
 }
 
-func (w *World) run() {
+func (w *World) Load() {
+	// load world here )
+}
+
+func (w *World) Run() {
 	d, e := w.cache.Resolve(w.ref)
 	fmt.Println(string(d), e)
 	ticker := time.NewTicker(time.Second * 5).C
@@ -110,10 +114,10 @@ func (w *World) run() {
 		case <-ticker:
 			fmt.Println(time.Now())
 			// run world updater from here.
-		case c := <-w.register:
-			fmt.Println("new world registration")
+			//case c := <-w.register:
+			//fmt.Println("new world registration")
 			//w.players[c] = true
-			c.send <- []byte("fnordy fnord fnord fnord")
+			//c.send <- []byte("fnordy fnord fnord fnord")
 		}
 	}
 
