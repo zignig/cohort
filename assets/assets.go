@@ -54,6 +54,7 @@ func (c *Cache) Req(path string, arg string) (resp *http.Response, err error) {
 		val.Set("encoding", "json")
 		u.RawQuery = val.Encode()
 	}
+	//TODO need to parse and return http status
 	fmt.Println(u.String())
 	resp, err = http.Get(u.String())
 	if err != nil {

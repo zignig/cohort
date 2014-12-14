@@ -31,6 +31,7 @@ type E4 struct {
 	W float64 `json:"_w"`
 }
 
+// tagged "location"
 type PosMessage struct {
 	Pos  V3     `json:"pos"`
 	Rot  E4     `json:"rot"`
@@ -63,9 +64,10 @@ type player struct {
 }
 
 type entity struct {
-	ref  string
-	data []byte
-	pos  V3
+	Ref  string `json:"Ref"`
+	Data []byte `json:"Data"`
+	Pos  V3     `json:"Pos"`
+	Rot  V3     `json:"Rot"`
 }
 
 type Sector struct {

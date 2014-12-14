@@ -25,7 +25,7 @@ func TestCache(t *testing.T) {
 	}
 	fmt.Println(st)
 	data, err := c.Cat(st + "/" + conf.Path)
-	fmt.Println(string(data))
+	//fmt.Println(string(data))
 	b, err := assets.LoadWorldStore(data)
 	fmt.Println(b, err)
 	// TODO need to decode json stuff in assets ( dodj hack )

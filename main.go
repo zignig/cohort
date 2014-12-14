@@ -9,13 +9,10 @@ import (
 	"github.com/zignig/viewer/util"
 )
 
-var conf util.Config
-
 func main() {
 	fmt.Println("Running Hub Server")
 	conf := util.GetConfig("universe.toml")
 	u := AndLetThereBeLight(conf)
-	u.conf = conf
 	fmt.Println(u)
 	go h.run()
 	go u.world.Run()

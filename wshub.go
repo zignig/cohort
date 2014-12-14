@@ -16,6 +16,7 @@ type playMessage struct {
 	Data    interface{}
 }
 
+// TODO ove to world ?
 func (pm *playMessage) Decode(m []byte) {
 	var dst interface{}
 	//pm := &playMessage{}
