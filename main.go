@@ -56,6 +56,6 @@ func (u *universe) wshandler(w http.ResponseWriter, r *http.Request) {
 	u.h.register <- c
 	//world.register <- c
 	// todo  , move this to write pump and push a new player
-	go c.writePump()
-	c.readPump()
+	go c.writePump(u.world)
+	c.readPump(u.world)
 }

@@ -2,6 +2,7 @@ package world
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/zignig/viewer/assets"
@@ -31,13 +32,6 @@ type E4 struct {
 	W float64 `json:"_w"`
 }
 
-// tagged "location"
-type PosMessage struct {
-	Pos  V3     `json:"pos"`
-	Rot  E4     `json:"rot"`
-	Uuid string `json:"uuid"`
-}
-
 // boolean status for each player of the
 // grid
 type gridStatus struct {
@@ -53,14 +47,6 @@ func NewGridStatus() *gridStatus {
 	gs.grid = grid
 	fmt.Println(gs)
 	return gs
-}
-
-//
-type player struct {
-	name  string
-	pos   V3
-	alive bool
-	stat  *gridStatus
 }
 
 type entity struct {
@@ -80,12 +66,12 @@ type World struct {
 	players map[*player]bool
 	grid    [][]*Sector
 	status  *gridStatus
-	//register chan *connection
-	// cache for assets
 
 	cache  *assets.Cache
 	config *util.Config
 	ref    string
+	// lock for player map
+	playerLock sync.Mutex
 }
 
 func NewWorld(config *util.Config, cache *assets.Cache) *World {
@@ -95,6 +81,7 @@ func NewWorld(config *util.Config, cache *assets.Cache) *World {
 		grid[i] = make([]*Sector, Sectors)
 	}
 	w.grid = grid
+	w.players = make(map[*player]bool)
 	w.status = NewGridStatus()
 	//w.register = make(chan *connection)
 	w.config = config

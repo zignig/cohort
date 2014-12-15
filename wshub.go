@@ -58,7 +58,7 @@ type hub struct {
 }
 
 // readPump pumps messages from the websocket connection to the hub.
-func (c *connection) readPump() {
+func (c *connection) readPump(w *world.World) {
 	defer func() {
 		u.h.unregister <- c
 		c.ws.Close()
@@ -67,16 +67,17 @@ func (c *connection) readPump() {
 	c.ws.SetReadLimit(maxMessageSize)
 	c.ws.SetReadDeadline(time.Now().Add(pongWait))
 	c.ws.SetPongHandler(func(string) error { c.ws.SetReadDeadline(time.Now().Add(pongWait)); return nil })
-	m := &playMessage{}
+	newPlayer := w.NewPlayer()
+	// start the player gorouting
+	go newPlayer.Run()
+	fmt.Println(newPlayer)
 	for {
 		_, message, err := c.ws.ReadMessage()
 		if err != nil {
 			break
 		}
-
-		//fmt.Println(string(message))
-		m.Decode(message)
-		fmt.Println(m.Data)
+		// push the data into the player object
+		newPlayer.Message <- message
 		//h.broadcast <- message
 	}
 }
@@ -102,7 +103,7 @@ const (
 )
 
 // writePump pumps messages from the hub to the websocket connection.
-func (c *connection) writePump() {
+func (c *connection) writePump(w *world.World) {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
