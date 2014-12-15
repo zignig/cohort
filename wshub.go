@@ -53,12 +53,14 @@ type hub struct {
 
 	// Unregister requests from connections.
 	unregister chan *connection
+
+	world *world.World
 }
 
 // readPump pumps messages from the websocket connection to the hub.
 func (c *connection) readPump() {
 	defer func() {
-		h.unregister <- c
+		u.h.unregister <- c
 		c.ws.Close()
 	}()
 	//
@@ -133,11 +135,14 @@ type connection struct {
 	send chan []byte
 }
 
-var h = hub{
-	broadcast:   make(chan []byte),
-	register:    make(chan *connection),
-	unregister:  make(chan *connection),
-	connections: make(map[*connection]bool),
+func NewHub(w *world.World) (h *hub) {
+	h = &hub{}
+	h.broadcast = make(chan []byte)
+	h.register = make(chan *connection)
+	h.unregister = make(chan *connection)
+	h.connections = make(map[*connection]bool)
+	h.world = w
+	return h
 }
 
 func (h *hub) run() {

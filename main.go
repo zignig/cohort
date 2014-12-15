@@ -9,13 +9,15 @@ import (
 	"github.com/zignig/viewer/util"
 )
 
+var u *universe
+
 func main() {
 	fmt.Println("Running Hub Server")
 	conf := util.GetConfig("universe.toml")
-	u := AndLetThereBeLight(conf)
+	u = AndLetThereBeLight(conf)
 	fmt.Println(u)
-	go h.run()
-	go u.world.Run()
+	// spin up the universe
+	u.run()
 
 	r := gin.Default()
 	r.LoadHTMLFiles("index.html")
@@ -51,7 +53,7 @@ func (u *universe) wshandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	c := &connection{send: make(chan []byte, 256), ws: conn}
-	h.register <- c
+	u.h.register <- c
 	//world.register <- c
 	// todo  , move this to write pump and push a new player
 	go c.writePump()
