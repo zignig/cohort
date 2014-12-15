@@ -104,6 +104,15 @@ type connection struct {
 	send chan []byte
 }
 
+func NewConnection(h *hub, conn *websocket.Conn) (c *connection) {
+	c = &connection{send: make(chan []byte, 256), ws: conn}
+	newPlayer := h.world.NewPlayer()
+	c.play = newPlayer
+	// start the player gorouting
+	go newPlayer.Run()
+	return c
+}
+
 func NewHub(w *world.World) (h *hub) {
 	h = &hub{}
 	h.broadcast = make(chan []byte)
@@ -121,13 +130,10 @@ func (h *hub) run() {
 			fmt.Println("new connection")
 			h.connections[c] = true
 			c.send <- []byte("load")
-			newPlayer := h.world.NewPlayer()
-			c.play = newPlayer
-			// start the player gorouting
-			go newPlayer.Run()
 
 		case c := <-h.unregister:
 			if _, ok := h.connections[c]; ok {
+				c.play.Closer <- true
 				delete(h.connections, c)
 				close(c.send)
 			}

@@ -51,7 +51,7 @@ func (p *Player) Run() {
 			p.Update(pm)
 		case <-p.Closer:
 			fmt.Println("close player")
-			break
+			return
 		}
 	}
 
