@@ -101,7 +101,12 @@ func (w *World) Run() {
 	for {
 		select {
 		case <-ticker:
-			fmt.Println(time.Now())
+			{
+				fmt.Println(time.Now())
+				for i := range w.players {
+					fmt.Println(i)
+				}
+			}
 			// run world updater from here.
 			//case c := <-w.register:
 			//fmt.Println("new world registration")
