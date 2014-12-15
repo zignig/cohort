@@ -63,7 +63,7 @@ type Sector struct {
 }
 
 type World struct {
-	players map[*player]bool
+	players map[*Player]bool
 	grid    [][]*Sector
 	status  *gridStatus
 
@@ -81,7 +81,7 @@ func NewWorld(config *util.Config, cache *assets.Cache) *World {
 		grid[i] = make([]*Sector, Sectors)
 	}
 	w.grid = grid
-	w.players = make(map[*player]bool)
+	w.players = make(map[*Player]bool)
 	w.status = NewGridStatus()
 	//w.register = make(chan *connection)
 	w.config = config

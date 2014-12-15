@@ -1,44 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/zignig/viewer/world"
 )
-
-// message from player
-type playMessage struct {
-	Class   string          `json:"class"`
-	Message json.RawMessage `json:"message"`
-	Data    interface{}
-}
-
-// TODO ove to world ?
-func (pm *playMessage) Decode(m []byte) {
-	var dst interface{}
-	//pm := &playMessage{}
-	err := json.Unmarshal(m, pm)
-	if err != nil {
-		fmt.Println("base decode ", err)
-	}
-	//fmt.Println("class ", pm.Class)
-	switch pm.Class {
-	case "location":
-		{
-			dst = &world.PosMessage{}
-			//fmt.Println("got location ", string(pm.Message))
-		}
-	}
-	err = json.Unmarshal(pm.Message, dst)
-	pm.Data = dst
-	if err != nil {
-		fmt.Println("message error ", err)
-	}
-	//fmt.Println(dst)
-}
 
 // player hub
 type hub struct {
@@ -58,7 +26,7 @@ type hub struct {
 }
 
 // readPump pumps messages from the websocket connection to the hub.
-func (c *connection) readPump(w *world.World) {
+func (c *connection) readPump() {
 	defer func() {
 		u.h.unregister <- c
 		c.ws.Close()
@@ -67,17 +35,13 @@ func (c *connection) readPump(w *world.World) {
 	c.ws.SetReadLimit(maxMessageSize)
 	c.ws.SetReadDeadline(time.Now().Add(pongWait))
 	c.ws.SetPongHandler(func(string) error { c.ws.SetReadDeadline(time.Now().Add(pongWait)); return nil })
-	newPlayer := w.NewPlayer()
-	// start the player gorouting
-	go newPlayer.Run()
-	fmt.Println(newPlayer)
 	for {
 		_, message, err := c.ws.ReadMessage()
 		if err != nil {
 			break
 		}
 		// push the data into the player object
-		newPlayer.Message <- message
+		c.play.InMess <- message
 		//h.broadcast <- message
 	}
 }
@@ -103,7 +67,7 @@ const (
 )
 
 // writePump pumps messages from the hub to the websocket connection.
-func (c *connection) writePump(w *world.World) {
+func (c *connection) writePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
@@ -111,6 +75,10 @@ func (c *connection) writePump(w *world.World) {
 	}()
 	for {
 		select {
+		case message := <-c.play.OutMess:
+			if err := c.write(websocket.TextMessage, message); err != nil {
+				return
+			}
 		case message, ok := <-c.send:
 			if !ok {
 				c.write(websocket.CloseMessage, []byte{})
@@ -130,8 +98,8 @@ func (c *connection) writePump(w *world.World) {
 // lifted from  The Gorilla WebSocket Authors. All rights reserved.
 type connection struct {
 	// The websocket connection.
-	ws *websocket.Conn
-
+	ws   *websocket.Conn
+	play *world.Player
 	// Buffered channel of outbound messages.
 	send chan []byte
 }
@@ -153,6 +121,11 @@ func (h *hub) run() {
 			fmt.Println("new connection")
 			h.connections[c] = true
 			c.send <- []byte("load")
+			newPlayer := h.world.NewPlayer()
+			c.play = newPlayer
+			// start the player gorouting
+			go newPlayer.Run()
+
 		case c := <-h.unregister:
 			if _, ok := h.connections[c]; ok {
 				delete(h.connections, c)

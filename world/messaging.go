@@ -19,6 +19,13 @@ type PosMessage struct {
 	Uuid string `json:"uuid"`
 }
 
+// tagger "loader"
+type LoaderMessage struct {
+	Path string `json:"path"`
+	Pos  V3     `json:"pos"`
+	Rot  E4     `json:"rot"`
+}
+
 // decodes play messages and returns objects into player loop
 
 func (pm *playMessage) Decode(m []byte) {
@@ -39,4 +46,25 @@ func (pm *playMessage) Decode(m []byte) {
 	if err != nil {
 		fmt.Println("message error ", err)
 	}
+}
+
+func Encode(i interface{}) (data []byte, err error) {
+	pm := &playMessage{}
+	switch i.(type) {
+	default:
+		pm.Class = "unknown"
+	case LoaderMessage:
+		pm.Class = "loader"
+	case PosMessage:
+		pm.Class = "location"
+	}
+	pm.Data, err = json.Marshal(i)
+	if err != nil {
+		fmt.Println(err)
+	}
+	data, err = json.Marshal(pm)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return data, err
 }
