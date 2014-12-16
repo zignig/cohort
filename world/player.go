@@ -24,11 +24,17 @@ type Player struct {
 func (w *World) NewPlayer() (thePlayer *Player) {
 	fmt.Println("Create New Player")
 	p := &Player{}
+	p.stat = NewGridStatus()
 	// mesage channel for player actions
+	// mesage from client
 	p.InMess = make(chan []byte, 5)
+	// message to client
 	p.OutMess = make(chan []byte, 5)
+	// closer for player loop
 	p.Closer = make(chan bool)
+	// world reference
 	p.world = w
+	// add player to world.
 	w.playerLock.Lock()
 	w.players[p] = true
 	w.playerLock.Unlock()
