@@ -52,7 +52,7 @@ func (u *universe) wshandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	c := &connection{send: make(chan []byte, 256), ws: conn}
+	c := NewConnection(u.h, conn)
 	u.h.register <- c
 	//world.register <- c
 	// todo  , move this to write pump and push a new player

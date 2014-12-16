@@ -62,13 +62,18 @@ func (p *Player) Update(pm *playMessage) {
 	switch pm.Class {
 	case "location":
 		{
-			fmt.Println(pm.Data)
+			loc := pm.Data.(*PosMessage)
+			loc.Pos.Sector()
 		}
 	}
 
 }
 
+// find the current sector of a player
 func (pos *V3) Sector() (x int, y int) {
 	fmt.Println(pos.X, pos.Y, pos.Z)
+	secx := int((pos.X + (SectorSize / 2)) / SectorSize)
+	secz := int((pos.Z + (SectorSize / 2)) / SectorSize)
+	fmt.Println("into => [", secx, ",", secz, "]")
 	return 0, 0
 }
