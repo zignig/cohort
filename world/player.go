@@ -37,6 +37,7 @@ func (w *World) NewPlayer() (thePlayer *Player) {
 	// add player to world.
 	w.playerLock.Lock()
 	w.players[p] = true
+	w.playerChan <- p
 	w.playerLock.Unlock()
 
 	return p

@@ -72,6 +72,7 @@ type World struct {
 	ref    string
 	// lock for player map
 	playerLock sync.Mutex
+	playerChan chan *Player
 }
 
 func NewWorld(config *util.Config, cache *assets.Cache) *World {
@@ -82,6 +83,7 @@ func NewWorld(config *util.Config, cache *assets.Cache) *World {
 	}
 	w.grid = grid
 	w.players = make(map[*Player]bool)
+	w.playerChan = make(chan *Player)
 	w.status = NewGridStatus()
 	//w.register = make(chan *connection)
 	w.config = config
@@ -104,11 +106,12 @@ func (w *World) Run() {
 			{
 				fmt.Println("world ticker ", time.Now())
 			}
-			// run world updater from here.
-			//case c := <-w.register:
-			//fmt.Println("new world registration")
-			//w.players[c] = true
-			//c.send <- []byte("fnordy fnord fnord fnord")
+		case p := <-w.playerChan:
+			{
+				fmt.Println("arrrrg boink")
+				p.OutMess <- []byte("this is a test")
+			}
+
 		}
 	}
 
