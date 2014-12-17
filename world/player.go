@@ -58,6 +58,9 @@ func (p *Player) Run() {
 			p.Update(pm)
 		case <-p.Closer:
 			fmt.Println("close player")
+			p.world.playerLock.Lock()
+			delete(p.world.players, p)
+			p.world.playerLock.Unlock()
 			return
 		}
 	}
@@ -79,8 +82,8 @@ func (p *Player) Update(pm *playMessage) {
 // find the current sector of a player
 func (pos *V3) Sector() (x int, y int) {
 	fmt.Println(pos.X, pos.Y, pos.Z)
-	secx := int((pos.X + (SectorSize / 2)) / SectorSize)
-	secz := int((pos.Z + (SectorSize / 2)) / SectorSize)
+	secx := (pos.X + (SectorSize / 2)) / SectorSize
+	secz := (pos.Z + (SectorSize / 2)) / SectorSize
 	fmt.Println("into => [", secx, ",", secz, "]")
 	return 0, 0
 }

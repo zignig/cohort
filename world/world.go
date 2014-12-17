@@ -105,6 +105,7 @@ func (w *World) Run() {
 		case <-ticker:
 			{
 				fmt.Println("world ticker ", time.Now())
+				fmt.Println("# of players ", len(w.players))
 			}
 		case p := <-w.playerChan:
 			{
