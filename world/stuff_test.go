@@ -27,7 +27,19 @@ func TestCache(t *testing.T) {
 	data, err := c.Cat(st + "/" + conf.Path)
 	//fmt.Println(string(data))
 	b, err := assets.LoadWorldStore(data)
-	fmt.Println(b, err)
+
+	//fmt.Println(b, err)
+	for x, dx := range b.Grid {
+		fmt.Println("----------", x, "--------------")
+		for y, dy := range dx {
+			fmt.Println(y, dy.Ips)
+			data, err := c.Cat(st + "/" + dy.Path)
+			if err != nil {
+				fmt.Println("sector error", err)
+			}
+			fmt.Println(string(data))
+		}
+	}
 	// TODO need to decode json stuff in assets ( dodj hack )
 	//d, e := c.Ls(string(st[1 : len(st)-1]))
 	//fmt.Println(string(d), e)

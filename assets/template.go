@@ -8,9 +8,9 @@ import (
 const Sectors = 8
 
 type V3 struct {
-	x float64
-	y float64
-	z float64
+	X float64
+	Y float64
+	Z float64
 }
 
 type Reference struct {
@@ -41,7 +41,7 @@ func NewWorldStore() *WorldStore {
 
 type SectorStore struct {
 	Name   string
-	Assets []AssetItem
+	Assets []*AssetItem
 }
 
 type AssetItem struct {
@@ -51,7 +51,16 @@ type AssetItem struct {
 }
 
 func export() {
-	ws := NewWorldStore()
+	ws := &SectorStore{}
+	ws.Assets = append(ws.Assets, &AssetItem{})
+	j, err := json.MarshalIndent(ws, "", "\t")
+	if err != nil {
+		fmt.Println("json error", err.Error())
+	}
+	fmt.Println(string(j))
+}
+
+func dump(ws interface{}) {
 	j, err := json.MarshalIndent(ws, "", "\t")
 	if err != nil {
 		fmt.Println("json error", err.Error())

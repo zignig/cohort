@@ -38,4 +38,8 @@ func TestCache(t *testing.T) {
 	//c.Ls("QmVyRrPEvAtTEDLKyEZWVMUwN9w3iJJxkN4uiCNNWoSyUQ")
 
 	//c.Cat("QmTJK6iE6hhBXCYAReV9ftQVnY8eTkyWcQMF5cQiSyD2ty")
+	export()
+	p := V3{}
+
+	dump(p)
 }
