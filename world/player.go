@@ -51,7 +51,7 @@ func (p *Player) Run() {
 	for {
 		select {
 		case <-ticker:
-			fmt.Println("do player stuff")
+			fmt.Println(p.stat)
 		case m := <-p.InMess:
 			pm.Decode(m)
 			// update the player
@@ -85,5 +85,6 @@ func (pos *V3) Sector() (x int, y int) {
 	secx := (pos.X + (SectorSize / 2)) / SectorSize
 	secz := (pos.Z + (SectorSize / 2)) / SectorSize
 	fmt.Println("into => [", secx, ",", secz, "]")
+	fmt.Println(int(secx))
 	return 0, 0
 }
