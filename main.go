@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/GeertJohan/go.rice"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/zignig/viewer/util"
@@ -21,7 +22,7 @@ func main() {
 
 	r := gin.Default()
 	r.LoadHTMLFiles("index.html")
-	r.Static("static", "static")
+	r.GET("/static/*filepath", u.staticFiles)
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(200, "index.html", nil)
 	})
@@ -40,6 +41,17 @@ func (u *universe) asset(c *gin.Context) {
 		c.String(500, err.Error())
 	}
 	c.Data(200, "", data)
+}
+
+func (u *universe) staticFiles(c *gin.Context) {
+	static, err := rice.FindBox("static")
+	if err != nil {
+		fmt.Println("Static Error")
+	}
+	original := c.Request.URL.Path
+	c.Request.URL.Path = c.Params.ByName("filepath")
+	http.FileServer(static.HTTPBox()).ServeHTTP(c.Writer, c.Request)
+	c.Request.URL.Path = original
 }
 
 var wsupgrader = websocket.Upgrader{
