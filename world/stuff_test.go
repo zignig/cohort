@@ -33,11 +33,13 @@ func TestCache(t *testing.T) {
 		fmt.Println("----------", x, "--------------")
 		for y, dy := range dx {
 			fmt.Println(y, dy.Ips)
-			data, err := c.Cat(st + "/" + dy.Path)
-			if err != nil {
-				fmt.Println("sector error", err)
+			if dy.Ips != "" {
+				data, err := c.Cat(st + "/" + dy.Path)
+				if err != nil {
+					fmt.Println("sector error", err)
+				}
+				fmt.Println(string(data))
 			}
-			fmt.Println(string(data))
 		}
 	}
 	// TODO need to decode json stuff in assets ( dodj hack )
