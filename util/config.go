@@ -14,9 +14,16 @@ type Config struct {
 	Banner string `toml:"banner"`
 }
 
+const defaultConfig = `
+banner = "This is the test world"
+ref = "QmZXxbfUdRYi578pectWLFNFv5USQrsXdYAGeCsMJ6X8Zt"
+path = "world.json"
+`
+
 func GetConfig(path string) (c *Config) {
 	if _, err := toml.DecodeFile(path, &c); err != nil {
-		fmt.Println("this is an error")
+		fmt.Println("Config file does not exists,create config")
+
 		fmt.Println(err)
 		return
 	}
