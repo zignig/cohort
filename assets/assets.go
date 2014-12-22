@@ -24,10 +24,12 @@ type dataBlock []byte
 type Ref string
 
 type Cache struct {
-	name   string
-	origin string
-	lock   sync.Mutex
-	lru    *Lru
+	name      string
+	origin    string
+	lock      sync.Mutex
+	nameCache map[string]string
+	nameLock  sync.Mutex
+	lru       *Lru
 }
 
 func NewCache() *Cache {
