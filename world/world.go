@@ -104,11 +104,13 @@ func (w *World) Run() {
 		select {
 		case <-ticker:
 			{
+				// update world here
 				fmt.Println("world ticker ", time.Now())
 				fmt.Println("# of players ", len(w.players))
 			}
 		case p := <-w.playerChan:
 			{
+				// messages into world from players
 				fmt.Println("arrrrg boink")
 				p.OutMess <- []byte("this is a test")
 			}

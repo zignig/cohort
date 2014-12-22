@@ -73,7 +73,12 @@ func (p *Player) Update(pm *playMessage) {
 	case "location":
 		{
 			loc := pm.Data.(*PosMessage)
-			loc.Pos.Sector()
+			x, y := loc.Pos.Sector()
+			fmt.Println("player in ", x, ",", y)
+			if (x >= 0) && (y >= 0) {
+				status := p.stat.grid[x][y]
+				fmt.Println("sector active ", status)
+			}
 		}
 	}
 
@@ -84,7 +89,6 @@ func (pos *V3) Sector() (x int, y int) {
 	fmt.Println(pos.X, pos.Y, pos.Z)
 	secx := (pos.X + (SectorSize / 2)) / SectorSize
 	secz := (pos.Z + (SectorSize / 2)) / SectorSize
-	fmt.Println("into => [", secx, ",", secz, "]")
-	fmt.Println(int(secx))
-	return 0, 0
+	//fmt.Println("into => [", secx, ",", secz, "]")
+	return int(secx), int(secz)
 }
