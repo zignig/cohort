@@ -14,7 +14,7 @@ import (
 // make a world sectors * sectors big
 
 const Sectors = 8
-const SectorSize = 256
+const SectorSize = 16 // should be 256
 
 // 3 vector
 // look for some math libs for V3
@@ -36,6 +36,22 @@ type E4 struct {
 // grid
 type gridStatus struct {
 	grid [][]bool
+}
+
+func (g *gridStatus) String() (s string) {
+	for i := range g.grid {
+		s = s + fmt.Sprint("|")
+		for j := range g.grid[i] {
+			stat := g.grid[i][j]
+			if stat {
+				s = s + fmt.Sprint("O", "|")
+			} else {
+				s = s + fmt.Sprint("X", "|")
+			}
+		}
+		s = s + fmt.Sprintln("")
+	}
+	return s
 }
 
 func NewGridStatus() *gridStatus {

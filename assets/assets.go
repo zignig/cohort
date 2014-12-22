@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"sync"
 
 	"net/http"
@@ -58,7 +57,7 @@ func (c *Cache) Req(path string, arg string) (resp *http.Response, err error) {
 	fmt.Println(u.String())
 	resp, err = http.Get(u.String())
 	if err != nil {
-		log.Fatal(err)
+		return resp, err
 	}
 	return resp, err
 }
@@ -116,7 +115,7 @@ func (c *Cache) Get(s string, a string) (data dataBlock, err error) {
 	data, err = ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 	//fmt.Printf("%s", data)
 	return data, err

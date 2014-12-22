@@ -40,7 +40,7 @@
       c.onopen = function(){
         interval = setInterval( 
           function(){ send(JSON.stringify({"class":"location","message":{"pos":controls.getObject().position,"rot":controls.getObject().quaternion,"uuid":controls.getObject().uuid}}))}
-        , 1000)
+        , 10)
       }
       
 	c.onlcose = function(){

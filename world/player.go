@@ -12,6 +12,8 @@ type Player struct {
 	rot   E4
 	alive bool
 	stat  *gridStatus
+	// current sector
+	grx, gry int
 	// channel for messages to player
 	InMess  chan []byte
 	OutMess chan []byte
@@ -76,8 +78,15 @@ func (p *Player) Update(pm *playMessage) {
 			x, y := loc.Pos.Sector()
 			fmt.Println("player in ", x, ",", y)
 			if (x >= 0) && (y >= 0) {
+				p.grx = x
+				p.gry = y
 				status := p.stat.grid[x][y]
-				fmt.Println("sector active ", status)
+				fmt.Printf("%v", p.stat)
+				// sector has not been visisted
+				if !status {
+					fmt.Println("activate ", x, y)
+					p.stat.grid[x][y] = true
+				}
 			}
 		}
 	}
