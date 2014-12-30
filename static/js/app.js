@@ -116,21 +116,6 @@ function init() {
 
 	raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 30 );
 
-	// floor
-	// note: 4x4 checkboard pattern scaled so that each square is 25 by 25 pixels.
-	var floorTexture = new THREE.ImageUtils.loadTexture( 'static/images/floor.jpg' );
-	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 10, 10 );
-	// DoubleSide: render texture on both sides of mesh
-	var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
-	var floorGeometry = new THREE.PlaneBufferGeometry(256, 256, 1, 1);
-	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-	floor.position.y = -0.5;
-	floor.rotation.x = Math.PI / 2;
-	scene.add(floor);
-
-	// objects
-
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.setClearColor( 0x000000);

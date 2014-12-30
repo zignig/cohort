@@ -33,6 +33,11 @@ type LoaderMessage struct {
 	Rot  assets.E4 `json:"Rot"`
 }
 
+// tagger "floor"
+type FloorMessage struct {
+	Pos assets.V3 `json:"Pos"`
+}
+
 // decodes play messages and returns objects into player loop
 
 func (pm *playMessage) Decode(m []byte) {
@@ -58,6 +63,9 @@ func (pm *playMessage) Decode(m []byte) {
 func Encode(i interface{}) (data []byte, err error) {
 	ps := &playSend{}
 	switch v := i.(type) {
+	case *FloorMessage:
+		fmt.Println(v)
+		ps.Class = "floor"
 	case *LoaderMessage:
 		fmt.Println(v)
 		ps.Class = "loader"
@@ -68,7 +76,6 @@ func Encode(i interface{}) (data []byte, err error) {
 		fmt.Println(v)
 		ps.Class = "infiniteawesome"
 	}
-
 	ps.Message = i
 	data, err = json.MarshalIndent(ps, "", "\t")
 	if err != nil {

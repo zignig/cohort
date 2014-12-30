@@ -38,6 +38,8 @@ func (w *World) LoadSector(p *Player) (err error) {
 	y := p.gry
 	fmt.Println("Load Sector")
 	fmt.Println("x :", x, " y :", y)
+	// TODO , remove
+	w.SendFloor(p, x, y)
 	// has sector been loaded
 	if w.status.grid[x][y] == false {
 		fmt.Println("Bounce Sector")
@@ -69,6 +71,22 @@ func (w *World) LoadSector(p *Player) (err error) {
 	}
 	fmt.Println(w.grid[x][y])
 	// Pump data to the  player client
-	p.SendSector(w.grid[x][y])
+	p.SendSector(w.grid[x][y], x, y)
 	return
+}
+
+func (w *World) SendFloor(p *Player, x int, y int) {
+	offx := float64(x * SectorSize)
+	offy := float64(y * SectorSize)
+	// send a floor builder
+	fl := &FloorMessage{}
+	fl.Pos.X = offx
+	fl.Pos.Z = offy
+	data, err := Encode(fl)
+	if err != nil {
+		fmt.Println("floor fail ", err)
+		return
+	}
+	fmt.Println(string(data))
+	p.OutMess <- data
 }
