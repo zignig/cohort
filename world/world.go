@@ -2,11 +2,10 @@ package world
 
 import (
 	"fmt"
-	"sync"
-	"time"
-
 	"github.com/zignig/viewer/assets"
 	"github.com/zignig/viewer/util"
+	"sync"
+	"time"
 )
 
 // world structures
@@ -14,7 +13,7 @@ import (
 // make a world sectors * sectors big
 
 const Sectors = 8
-const SectorSize = 16 // should be 256
+const SectorSize = 256 // should be 256
 
 // 3 vector
 // look for some math libs for V3
@@ -65,22 +64,9 @@ func NewGridStatus() *gridStatus {
 	return gs
 }
 
-type entity struct {
-	Ref  string `json:"Ref"`
-	Data []byte `json:"Data"`
-	Pos  V3     `json:"Pos"`
-	Rot  V3     `json:"Rot"`
-}
-
-type Sector struct {
-	ref   string
-	owner string
-	ents  []*entity
-}
-
 type World struct {
 	players map[*Player]bool
-	grid    [][]*Sector
+	grid    [][]*assets.SectorStore
 	status  *gridStatus
 
 	cache  *assets.Cache
@@ -88,18 +74,25 @@ type World struct {
 	ref    string
 	// lock for player map
 	playerLock sync.Mutex
+	// player messages into world
 	playerChan chan *Player
+	// load assets into player ( browser )
+	loaderChan chan *Player
+
+	// data structs from ipfs ( side load and check )
+	ws *assets.WorldStore
 }
 
 func NewWorld(config *util.Config, cache *assets.Cache) *World {
 	w := &World{}
-	grid := make([][]*Sector, Sectors)
+	grid := make([][]*assets.SectorStore, Sectors)
 	for i := range grid {
-		grid[i] = make([]*Sector, Sectors)
+		grid[i] = make([]*assets.SectorStore, Sectors)
 	}
 	w.grid = grid
 	w.players = make(map[*Player]bool)
 	w.playerChan = make(chan *Player)
+	w.loaderChan = make(chan *Player)
 	w.status = NewGridStatus()
 	//w.register = make(chan *connection)
 	w.config = config
@@ -108,14 +101,13 @@ func NewWorld(config *util.Config, cache *assets.Cache) *World {
 	return w
 }
 
-func (w *World) Load() {
-	// load world here )
-}
-
 func (w *World) Run() {
-	d, e := w.cache.Resolve(w.ref)
-	fmt.Println(string(d), e)
-	ticker := time.NewTicker(time.Second * 5).C
+	err := w.Load()
+	if err != nil {
+		fmt.Println("world load fail bailing")
+		return
+	}
+	ticker := time.NewTicker(time.Second * 60).C
 	for {
 		select {
 		case <-ticker:
@@ -130,7 +122,13 @@ func (w *World) Run() {
 				fmt.Println("arrrrg boink")
 				p.OutMess <- []byte("this is a test")
 			}
-
+		case lc := <-w.loaderChan:
+			{
+				// messages into world from players
+				fmt.Println("send data to player to load sector")
+				w.LoadSector(lc)
+				//lc.OutMess <- []byte("load sector")
+			}
 		}
 	}
 

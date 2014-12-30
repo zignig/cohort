@@ -1,4 +1,5 @@
       url = 'ws://'+location.host+'/ws';
+	
       c = new WebSocket(url);
       var interval ; 
       send = function(data){

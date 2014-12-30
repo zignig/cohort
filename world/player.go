@@ -2,7 +2,8 @@ package world
 
 import (
 	"fmt"
-	"time"
+	//	"time"
+	"github.com/zignig/viewer/assets"
 )
 
 //
@@ -48,13 +49,14 @@ func (w *World) NewPlayer() (thePlayer *Player) {
 // internal player loop
 func (p *Player) Run() {
 	fmt.Println("starting player")
-	ticker := time.NewTicker(time.Second * 5).C
+	//ticker := time.NewTicker(time.Second * 5).C
 	pm := &playMessage{}
 	for {
 		select {
-		case <-ticker:
-			fmt.Println(p.stat)
+		//case <-ticker:
+		//fmt.Println(p.stat)
 		case m := <-p.InMess:
+			// decode the player message
 			pm.Decode(m)
 			// update the player
 			p.Update(pm)
@@ -76,16 +78,17 @@ func (p *Player) Update(pm *playMessage) {
 		{
 			loc := pm.Data.(*PosMessage)
 			x, y := loc.Pos.Sector()
-			fmt.Println("player in ", x, ",", y)
+			//fmt.Println("player in ", x, ",", y)
 			if (x >= 0) && (y >= 0) {
 				p.grx = x
 				p.gry = y
 				status := p.stat.grid[x][y]
-				fmt.Printf("%v", p.stat)
+				//fmt.Printf("%v", p.stat)
 				// sector has not been visisted
 				if !status {
 					fmt.Println("activate ", x, y)
 					p.stat.grid[x][y] = true
+					p.world.loaderChan <- p
 				}
 			}
 		}
@@ -93,11 +96,20 @@ func (p *Player) Update(pm *playMessage) {
 
 }
 
-// find the current sector of a player
-func (pos *V3) Sector() (x int, y int) {
-	fmt.Println(pos.X, pos.Y, pos.Z)
-	secx := (pos.X + (SectorSize / 2)) / SectorSize
-	secz := (pos.Z + (SectorSize / 2)) / SectorSize
-	//fmt.Println("into => [", secx, ",", secz, "]")
-	return int(secx), int(secz)
+func (p *Player) SendSector(ss *assets.SectorStore) {
+	for i := range ss.Assets {
+		theAsset := ss.Assets[i]
+		fmt.Println("send asset to client")
+		fmt.Println(theAsset)
+		lm := &LoaderMessage{}
+		lm.Path = ss.Ref + "/" + theAsset.Path
+		lm.Pos = theAsset.Pos
+		lm.Rot = theAsset.Rot
+		data, err := Encode(lm)
+		if err != nil {
+			fmt.Println("encode fail")
+		}
+		fmt.Println(string(data))
+
+	}
 }

@@ -3,6 +3,7 @@ package world
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/zignig/viewer/assets"
 )
 
 // message from player
@@ -21,9 +22,9 @@ type PosMessage struct {
 
 // tagger "loader"
 type LoaderMessage struct {
-	Path string `json:"path"`
-	Pos  V3     `json:"pos"`
-	Rot  E4     `json:"rot"`
+	Path string    `json:"path"`
+	Pos  assets.V3 `json:"pos"`
+	Rot  assets.E4 `json:"rot"`
 }
 
 // decodes play messages and returns objects into player loop

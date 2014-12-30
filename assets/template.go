@@ -24,9 +24,14 @@ type WorldStore struct {
 	Grid  [][]Reference
 }
 
-func LoadWorldStore(data []byte) (ws *WorldStore, err error) {
+func (c *Cache) LoadWorldStore(data []byte) (ws *WorldStore, err error) {
 	err = json.Unmarshal(data, &ws)
 	return ws, err
+}
+
+func (c *Cache) LoadSectorStore(data []byte) (ss *SectorStore, err error) {
+	err = json.Unmarshal(data, &ss)
+	return ss, err
 }
 
 func NewWorldStore() *WorldStore {
@@ -40,14 +45,14 @@ func NewWorldStore() *WorldStore {
 }
 
 type SectorStore struct {
-	Name   string
+	Ref    string
 	Assets []*AssetItem
 }
 
 type AssetItem struct {
-	Ref Reference
-	Pos V3
-	Rot V3
+	Path string `json:"path"`
+	Pos  V3
+	Rot  E4
 }
 
 func export() {

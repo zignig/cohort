@@ -2,6 +2,7 @@ package assets
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"sync"
@@ -58,6 +59,9 @@ func (c *Cache) Req(path string, arg string) (resp *http.Response, err error) {
 	//TODO need to parse and return http status
 	fmt.Println(u.String())
 	resp, err = http.Get(u.String())
+	if resp.StatusCode != 200 {
+		return resp, errors.New(resp.Status)
+	}
 	if err != nil {
 		return resp, err
 	}
@@ -99,13 +103,14 @@ func (c *Cache) Cat(s string) (data dataBlock, err error) {
 		// not in cache
 		data, err = c.Get("cat", s)
 		if err != nil {
-			return nil, err
+			fmt.Println("cat error ", err)
+			return data, err
 		}
 		fmt.Println("add to cache", s)
 		c.lru.Add(s, data)
 		return data, nil
 	}
-	fmt.Println("in cache ", s)
+	//fmt.Println("in cache ", s)
 	return val, nil
 }
 
@@ -113,11 +118,16 @@ func (c *Cache) Cat(s string) (data dataBlock, err error) {
 func (c *Cache) Get(s string, a string) (data dataBlock, err error) {
 	fmt.Println(s)
 	resp, err := c.Req(s, a)
+	if err != nil {
+		fmt.Println(err)
+		return dataBlock{}, err
+	}
 	fmt.Println(resp.Status)
 	data, err = ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 	if err != nil {
 		fmt.Println(err)
+		return dataBlock{}, err
 	}
 	//fmt.Printf("%s", data)
 	return data, err

@@ -26,7 +26,7 @@ func TestCache(t *testing.T) {
 	fmt.Println(st)
 	data, err := c.Cat(st + "/" + conf.Path)
 	//fmt.Println(string(data))
-	b, err := assets.LoadWorldStore(data)
+	b, err := c.LoadWorldStore(data)
 
 	//fmt.Println(b, err)
 	for x, dx := range b.Grid {

@@ -24,7 +24,11 @@ func TestCache(t *testing.T) {
 	}
 	fmt.Println(st)
 	data, err := c.Cat(st + "/" + conf.Path)
+	if err != nil {
+		fmt.Println("ls errror ", err)
+	}
 	fmt.Println(string(data))
+	//fmt.Println(string(data))
 	// TODO need to decode json stuff in assets ( dodj hack )
 	//d, e := c.Ls(string(st[1 : len(st)-1]))
 	//fmt.Println(string(d), e)
@@ -32,14 +36,25 @@ func TestCache(t *testing.T) {
 	// import export struct tests
 	//export()
 
-	c.Ls("Qmeq1j9dwd3xYBe6D6Qtrvvbr6DXF3diKLvbS2ApBb1T6j")
+	d, err := c.Ls(st)
+	if err != nil {
+		fmt.Println("ls errror ", err)
+	}
+	fmt.Println(string(d))
+	// broken hash
+	d, err = c.Ls("Qmeq1j9dwd3xY4e6D6Qtrvvbr6DXF3diKLvbS2ApBb1T6j")
+	if err != nil {
+		fmt.Println("ls errror ", err)
+	}
+	fmt.Println(string(d))
+
 	//c.Cat("QmTJK6iE6hhBXCYAReV9ftQVnY8eTkyWcQMF5cQiSyD2ty")
 
 	//c.Ls("QmVyRrPEvAtTEDLKyEZWVMUwN9w3iJJxkN4uiCNNWoSyUQ")
 
 	//c.Cat("QmTJK6iE6hhBXCYAReV9ftQVnY8eTkyWcQMF5cQiSyD2ty")
 	export()
-	p := V3{}
+	//p := V3{}
 
-	dump(p)
+	//dump(p)
 }
