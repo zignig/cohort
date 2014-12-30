@@ -10,7 +10,13 @@ import (
 type playMessage struct {
 	Class   string          `json:"class"`
 	Message json.RawMessage `json:"message"`
-	Data    interface{}
+	data    interface{}
+}
+
+// message to player
+type playSend struct {
+	Class   string      `json:"class"`
+	Message interface{} `json:"message"`
 }
 
 // tagged "location"
@@ -23,8 +29,8 @@ type PosMessage struct {
 // tagger "loader"
 type LoaderMessage struct {
 	Path string    `json:"path"`
-	Pos  assets.V3 `json:"pos"`
-	Rot  assets.E4 `json:"rot"`
+	Pos  assets.V3 `json:"Pos"`
+	Rot  assets.E4 `json:"Rot"`
 }
 
 // decodes play messages and returns objects into player loop
@@ -43,27 +49,28 @@ func (pm *playMessage) Decode(m []byte) {
 		}
 	}
 	err = json.Unmarshal(pm.Message, dst)
-	pm.Data = dst
+	pm.data = dst
 	if err != nil {
 		fmt.Println("message error ", err)
 	}
 }
 
 func Encode(i interface{}) (data []byte, err error) {
-	pm := &playMessage{}
-	switch i.(type) {
+	ps := &playSend{}
+	switch v := i.(type) {
+	case *LoaderMessage:
+		fmt.Println(v)
+		ps.Class = "loader"
+	case *PosMessage:
+		fmt.Println(v)
+		ps.Class = "location"
 	default:
-		pm.Class = "unknown"
-	case LoaderMessage:
-		pm.Class = "loader"
-	case PosMessage:
-		pm.Class = "location"
+		fmt.Println(v)
+		ps.Class = "infiniteawesome"
 	}
-	pm.Data, err = json.Marshal(i)
-	if err != nil {
-		fmt.Println(err)
-	}
-	data, err = json.Marshal(pm)
+
+	ps.Message = i
+	data, err = json.MarshalIndent(ps, "", "\t")
 	if err != nil {
 		fmt.Println(err)
 	}

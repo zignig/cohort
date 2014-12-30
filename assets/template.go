@@ -13,6 +13,14 @@ type V3 struct {
 	Z float64
 }
 
+// 4 d euler
+type E4 struct {
+	X float64
+	Y float64
+	Z float64
+	W float64
+}
+
 type Reference struct {
 	Ips    string
 	IsName bool `json:",omitempty"`

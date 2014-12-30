@@ -76,7 +76,7 @@ func (p *Player) Update(pm *playMessage) {
 	switch pm.Class {
 	case "location":
 		{
-			loc := pm.Data.(*PosMessage)
+			loc := pm.data.(*PosMessage)
 			x, y := loc.Pos.Sector()
 			//fmt.Println("player in ", x, ",", y)
 			if (x >= 0) && (y >= 0) {
@@ -102,14 +102,14 @@ func (p *Player) SendSector(ss *assets.SectorStore) {
 		fmt.Println("send asset to client")
 		fmt.Println(theAsset)
 		lm := &LoaderMessage{}
-		lm.Path = ss.Ref + "/" + theAsset.Path
+		lm.Path = ss.Ref + theAsset.Path
 		lm.Pos = theAsset.Pos
 		lm.Rot = theAsset.Rot
 		data, err := Encode(lm)
 		if err != nil {
-			fmt.Println("encode fail")
+			fmt.Println("encode fail ", err)
 		}
 		fmt.Println(string(data))
-
+		p.OutMess <- data
 	}
 }
