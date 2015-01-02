@@ -35,7 +35,8 @@ type LoaderMessage struct {
 
 // tagger "floor"
 type FloorMessage struct {
-	Pos assets.V3 `json:"Pos"`
+	Pos  assets.V3 `json:"Pos"`
+	Size int       `json:"Size"`
 }
 
 // decodes play messages and returns objects into player loop

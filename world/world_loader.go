@@ -17,7 +17,9 @@ func (w *World) Load() (err error) {
 	}
 	data, err := w.cache.Cat(st + "/" + w.config.Path)
 	if err != nil {
-		fmt.Println("World doc resolve")
+
+		fmt.Println("World doc resolve ", err)
+		fmt.Println(data)
 		err = errors.New("world doc fail")
 		return
 	}
@@ -82,6 +84,7 @@ func (w *World) SendFloor(p *Player, x int, y int) {
 	fl := &FloorMessage{}
 	fl.Pos.X = offx
 	fl.Pos.Z = offy
+	fl.Size = SectorSize
 	data, err := Encode(fl)
 	if err != nil {
 		fmt.Println("floor fail ", err)

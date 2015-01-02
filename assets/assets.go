@@ -35,6 +35,7 @@ type Cache struct {
 
 func NewCache() *Cache {
 	c := &Cache{}
+	c.nameCache = make(map[string]string)
 	c.lru = NewLru(Max)
 	return c
 }
@@ -70,6 +71,11 @@ func (c *Cache) Req(path string, arg string) (resp *http.Response, err error) {
 
 // like this /api/v0/name/resolve?arg=QmZXxbfUdRYi578pectWLFNFv5USQrsXdYAGeCsMJ6X8Zt&encoding=json
 func (c *Cache) Resolve(name string) (ref string, err error) {
+	val, ok := c.nameCache[name]
+	if ok {
+		fmt.Println("in name cache")
+		return val, err
+	}
 	data, err := c.Get("name/resolve", name)
 	if err != nil {
 		fmt.Println("resolve error ", err)
@@ -84,6 +90,10 @@ func (c *Cache) Resolve(name string) (ref string, err error) {
 		return "", err
 	}
 	ref = string(*refObj)
+	c.nameLock.Lock()
+	fmt.Println("add name ", name, " to cache")
+	c.nameCache[name] = ref
+	c.nameLock.Unlock()
 	return ref, err
 }
 
@@ -103,7 +113,7 @@ func (c *Cache) Cat(s string) (data dataBlock, err error) {
 		// not in cache
 		data, err = c.Get("cat", s)
 		if err != nil {
-			fmt.Println("cat error ", err)
+			fmt.Println("cat error ", err, data)
 			return data, err
 		}
 		fmt.Println("add to cache", s)

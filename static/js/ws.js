@@ -34,12 +34,12 @@
 				
 				// floor
 				// note: 4x4 checkboard pattern scaled so that each square is 25 by 25 pixels.
-				floorTexture = new THREE.ImageUtils.loadTexture( 'static/images/floor.jpg' );
+				floorTexture = new THREE.ImageUtils.loadTexture( 'static/images/dirt.jpg' );
 				floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 				floorTexture.repeat.set( 10, 10 );
 				// DoubleSide: render texture on both sides of mesh
 				floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
-				floorGeometry = new THREE.PlaneBufferGeometry(256, 256, 1, 1);
+				floorGeometry = new THREE.PlaneBufferGeometry(m.message.Size, m.message.Size, 1, 1);
 				floor = new THREE.Mesh(floorGeometry, floorMaterial);
 				floor.position.x = m.message.Pos.X
 				floor.position.y = m.message.Pos.Y

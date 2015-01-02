@@ -13,7 +13,7 @@ import (
 // make a world sectors * sectors big
 
 const Sectors = 8
-const SectorSize = 256 // should be 256
+const SectorSize = 128 // should be 256
 
 // 3 vector
 // look for some math libs for V3
