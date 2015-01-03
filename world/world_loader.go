@@ -41,7 +41,9 @@ func (w *World) LoadSector(p *Player) (err error) {
 	fmt.Println("Load Sector")
 	fmt.Println("x :", x, " y :", y)
 	// TODO , remove
-	w.SendFloor(p, x, y)
+	//w.SendFloor(p, x, y)
+	//w.SendTile(p, x, y)
+
 	// has sector been loaded
 	if w.status.grid[x][y] == false {
 		fmt.Println("Bounce Sector")
@@ -86,6 +88,33 @@ func (w *World) SendFloor(p *Player, x int, y int) {
 	fl.Pos.Z = offy
 	fl.Size = SectorSize
 	data, err := Encode(fl)
+	if err != nil {
+		fmt.Println("floor fail ", err)
+		return
+	}
+	fmt.Println(string(data))
+	p.OutMess <- data
+}
+
+func (w *World) SendTiles(p *Player) {
+	for i := range w.tiles.Grid {
+		for j := range w.tiles.Grid[i] {
+			w.SendTile(p, i, j)
+		}
+	}
+}
+
+func (w *World) SendTile(p *Player, x int, y int) {
+	offx := float64(x * SectorSize)
+	offy := float64(y * SectorSize)
+	// send a floor builder
+	ti := &TileMessage{}
+	ti.Ref = w.config.Tile
+	ti.Pos.X = offx
+	ti.Pos.Y = -2
+	ti.Pos.Z = offy
+	ti.Name = "lot-exit"
+	data, err := Encode(ti)
 	if err != nil {
 		fmt.Println("floor fail ", err)
 		return

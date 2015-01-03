@@ -12,6 +12,7 @@ type Config struct {
 	Ref    string `toml:"ref"`
 	Path   string `toml:"path"`
 	Banner string `toml:"banner"`
+	Tile   string `toml:"tile"`
 }
 
 const defaultConfig = `

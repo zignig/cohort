@@ -49,6 +49,28 @@
 				floor.rotation.x = Math.PI / 2;
 				console.log(floor);
 				scene.add(floor);
+			
+			case "tile":
+				var onProgress = function ( xhr ) {
+					if ( xhr.lengthComputable ) {
+						var percentComplete = xhr.loaded / xhr.total * 100;
+						console.log( Math.round(percentComplete, 2) + '% downloaded' );
+					}
+				};
+				var onError = function ( xhr ) {};
+				var loader = new THREE.OBJMTLLoader();
+				var path = 'asset/'+m.message.Ref+'/tiles/'+m.message.Name;
+				loader.load( path+'.obj', path+'.mtl', function ( object ) {
+					object.position.x = m.message.Pos.X;
+					object.position.y = m.message.Pos.Y;
+					object.position.z = m.message.Pos.Z;
+					object.scale.x = 4
+					object.scale.y = 1
+					object.scale.z = 4
+					
+					scene.add( object );
+
+				}, onProgress, onError );
 		}
       }
 

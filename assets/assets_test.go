@@ -1,17 +1,41 @@
 package assets
 
 import (
-	//"encoding/json"
+	"encoding/json"
 
 	//"io/ioutil"
 	//"net/http"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/zignig/viewer/util"
 )
 
-func TestCache(t *testing.T) {
+func TestTiles(t *testing.T) {
+	conf := util.GetConfig("../universe.toml")
+	tiles := conf.Tile
+	c := NewCache()
+	st, err := c.Ls(tiles)
+	if err != nil {
+		fmt.Println("FAIL resolve")
+	}
+	fmt.Print(string(st))
+	tileList := &Listing{}
+	json.Unmarshal(st, tileList)
+	links := tileList.Objects[0].Links
+
+	for i := range links {
+		TileName := links[i].Name
+		if strings.HasSuffix(TileName, "obj") {
+			fmt.Println(TileName)
+		}
+	}
+	fmt.Println(len(links), " tiles in hash")
+
+}
+
+func aTestCache(t *testing.T) {
 	conf := util.GetConfig("../universe.toml")
 	baseRef := conf.Ref
 	fmt.Println(conf)

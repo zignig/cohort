@@ -1,7 +1,7 @@
 package world
 
 import (
-	//"encoding/json"
+	"encoding/json"
 
 	//"io/ioutil"
 	//"net/http"
@@ -12,7 +12,21 @@ import (
 	"github.com/zignig/viewer/util"
 )
 
-func TestCache(t *testing.T) {
+func TestTiles(t *testing.T) {
+	tiles := NewTileGrid()
+	for i := range tiles.Grid {
+		for j := range tiles.Grid[i] {
+			tiles.Grid[i][j].Name = "grass.obj"
+		}
+	}
+	txt, err := json.MarshalIndent(tiles, "", "\t")
+	if err != nil {
+		fmt.Println("tile marshall error ", err)
+	}
+	fmt.Println(string(txt))
+}
+
+func nTestCache(t *testing.T) {
 	conf := util.GetConfig("../universe.toml")
 	baseRef := conf.Ref
 	fmt.Println(conf)

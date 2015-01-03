@@ -12,8 +12,8 @@ import (
 
 // make a world sectors * sectors big
 
-const Sectors = 8
-const SectorSize = 128 // should be 256
+const Sectors = 8     // square layout X*X
+const SectorSize = 32 // prepare for tiles
 
 // 3 vector
 // look for some math libs for V3
@@ -29,6 +29,28 @@ type E4 struct {
 	Y float64 `json:"_y"`
 	Z float64 `json:"_z"`
 	W float64 `json:"_w"`
+}
+
+// single tile
+type tile struct {
+	Name   string
+	Rotate int
+}
+
+type tileGrid struct {
+	Ref  string
+	Grid [][]tile
+}
+
+func NewTileGrid() *tileGrid {
+	gs := &tileGrid{}
+	grid := make([][]tile, Sectors)
+	for i := range grid {
+		grid[i] = make([]tile, Sectors)
+	}
+	gs.Grid = grid
+	fmt.Println(gs)
+	return gs
 }
 
 // boolean status for each player of the
@@ -68,7 +90,8 @@ type World struct {
 	players map[*Player]bool
 	grid    [][]*assets.SectorStore
 	status  *gridStatus
-
+	// tiles
+	tiles  *tileGrid
 	cache  *assets.Cache
 	config *util.Config
 	ref    string
@@ -89,6 +112,7 @@ func NewWorld(config *util.Config, cache *assets.Cache) *World {
 	for i := range grid {
 		grid[i] = make([]*assets.SectorStore, Sectors)
 	}
+	w.tiles = NewTileGrid()
 	w.grid = grid
 	w.players = make(map[*Player]bool)
 	w.playerChan = make(chan *Player)
@@ -120,6 +144,7 @@ func (w *World) Run() {
 			{
 				// messages into world from players
 				fmt.Println("arrrrg boink")
+				w.SendTiles(p)
 				p.OutMess <- []byte("this is a test")
 			}
 		case lc := <-w.loaderChan:

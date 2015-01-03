@@ -99,20 +99,11 @@ func (p *Player) Update(pm *playMessage) {
 func (p *Player) SendSector(ss *assets.SectorStore, x int, y int) {
 	offx := float64(x * SectorSize)
 	offy := float64(y * SectorSize)
-	// send a floor builder
-	fl := &FloorMessage{}
-	fl.Pos.X = offx
-	fl.Pos.Z = offy
-	data, err := Encode(fl)
-	if err != nil {
-		fmt.Println("floor fail ", err)
-		return
-	}
-	fmt.Println(string(data))
-	p.OutMess <- data
+
 	if ss == nil {
 		return
 	}
+
 	// send each asset to client
 	for i := range ss.Assets {
 		theAsset := ss.Assets[i]

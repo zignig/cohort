@@ -39,6 +39,14 @@ type FloorMessage struct {
 	Size int       `json:"Size"`
 }
 
+// tagger "tile"
+type TileMessage struct {
+	Pos    assets.V3 `json:"Pos"`
+	Name   string
+	Ref    string
+	Rotate int
+}
+
 // decodes play messages and returns objects into player loop
 
 func (pm *playMessage) Decode(m []byte) {
@@ -73,6 +81,9 @@ func Encode(i interface{}) (data []byte, err error) {
 	case *PosMessage:
 		fmt.Println(v)
 		ps.Class = "location"
+	case *TileMessage:
+		fmt.Println(v)
+		ps.Class = "tile"
 	default:
 		fmt.Println(v)
 		ps.Class = "infiniteawesome"
