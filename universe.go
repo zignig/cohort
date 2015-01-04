@@ -29,6 +29,7 @@ func (u *universe) run() {
 	go u.world.Run()
 	go u.h.run()
 }
+
 func (u *universe) String() (s string) {
 	return "REALLY BIG"
 }

@@ -26,6 +26,7 @@ func (w *World) Load() (err error) {
 	// save the base ref for the world
 	w.ref = st
 	w.ws, err = w.cache.LoadWorldStore(data)
+	w.tiles = w.GenTiles()
 	if err != nil {
 		fmt.Println("World doc resolve")
 		err = errors.New("world doc fail")
@@ -46,7 +47,7 @@ func (w *World) LoadSector(p *Player) (err error) {
 
 	// has sector been loaded
 	if w.status.grid[x][y] == false {
-		fmt.Println("Bounce Sector")
+		fmt.Println("Bounce Sector ", x, y)
 		s := w.ws.Grid[x][y]
 		fmt.Println("Sector info ", s)
 		st, err2 := w.cache.Resolve(s.Ips)
@@ -65,60 +66,16 @@ func (w *World) LoadSector(p *Player) (err error) {
 		sectorData, err2 := w.cache.LoadSectorStore(data)
 		sectorData.Ref = st
 		fmt.Println(sectorData)
-		w.grid[x][y] = sectorData
 		if err2 != nil {
 			fmt.Println("Sector convert fail")
 			err = errors.New("Sector convert fail")
 			return
 		}
+		w.grid[x][y] = sectorData
 		w.status.grid[x][y] = true
 	}
 	fmt.Println(w.grid[x][y])
 	// Pump data to the  player client
 	p.SendSector(w.grid[x][y], x, y)
 	return
-}
-
-func (w *World) SendFloor(p *Player, x int, y int) {
-	offx := float64(x * SectorSize)
-	offy := float64(y * SectorSize)
-	// send a floor builder
-	fl := &FloorMessage{}
-	fl.Pos.X = offx
-	fl.Pos.Z = offy
-	fl.Size = SectorSize
-	data, err := Encode(fl)
-	if err != nil {
-		fmt.Println("floor fail ", err)
-		return
-	}
-	fmt.Println(string(data))
-	p.OutMess <- data
-}
-
-func (w *World) SendTiles(p *Player) {
-	for i := range w.tiles.Grid {
-		for j := range w.tiles.Grid[i] {
-			w.SendTile(p, i, j)
-		}
-	}
-}
-
-func (w *World) SendTile(p *Player, x int, y int) {
-	offx := float64(x * SectorSize)
-	offy := float64(y * SectorSize)
-	// send a floor builder
-	ti := &TileMessage{}
-	ti.Ref = w.config.Tile
-	ti.Pos.X = offx
-	ti.Pos.Y = -2
-	ti.Pos.Z = offy
-	ti.Name = "lot-exit"
-	data, err := Encode(ti)
-	if err != nil {
-		fmt.Println("floor fail ", err)
-		return
-	}
-	fmt.Println(string(data))
-	p.OutMess <- data
 }

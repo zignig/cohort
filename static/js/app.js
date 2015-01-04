@@ -105,11 +105,17 @@ function init() {
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 
 	scene = new THREE.Scene();
-	scene.fog = new THREE.Fog( 0xFFFFFF, 0, 1024);
+	//scene.fog = new THREE.Fog( 0xFFFFFF, 0, 1024);
 
-	var light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.75 );
-	light.position.set( 0.5, 20, 0.75 );
+	var light = new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 1.0 );
+	light.position.set( 0.5, 300, 0.75 );
 	scene.add( light );
+
+	dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+	dirLight.color.setHSL( 0.1, 1, 0.95 );
+	dirLight.position.set( -1, 150, 1 );
+	dirLight.position.multiplyScalar( 50 );
+	scene.add( dirLight );
 
 	controls = new THREE.PointerLockControls( camera );
 	scene.add( controls.getObject() );
@@ -117,7 +123,7 @@ function init() {
 	raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 30 );
 
 
-	renderer = new THREE.WebGLRenderer();
+	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.setClearColor( 0xFFFFFF);
 	renderer.setSize( window.innerWidth, window.innerHeight );
 

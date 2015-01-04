@@ -14,7 +14,7 @@ import (
 const (
 	api      = "/api/v0/"
 	ipfsHost = "localhost:5001"
-	Max      = 46 // investigate byte limit
+	Max      = 600 // investigate byte limit
 )
 
 type Caches interface {

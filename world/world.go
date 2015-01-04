@@ -12,7 +12,7 @@ import (
 
 // make a world sectors * sectors big
 
-const Sectors = 8     // square layout X*X
+const Sectors = 10    // square layout X*X
 const SectorSize = 32 // prepare for tiles
 
 // 3 vector
@@ -31,34 +31,13 @@ type E4 struct {
 	W float64 `json:"_w"`
 }
 
-// single tile
-type tile struct {
-	Name   string
-	Rotate int
-}
-
-type tileGrid struct {
-	Ref  string
-	Grid [][]tile
-}
-
-func NewTileGrid() *tileGrid {
-	gs := &tileGrid{}
-	grid := make([][]tile, Sectors)
-	for i := range grid {
-		grid[i] = make([]tile, Sectors)
-	}
-	gs.Grid = grid
-	fmt.Println(gs)
-	return gs
-}
-
 // boolean status for each player of the
 // grid
 type gridStatus struct {
 	grid [][]bool
 }
 
+// grid printer
 func (g *gridStatus) String() (s string) {
 	for i := range g.grid {
 		s = s + fmt.Sprint("|")
@@ -142,15 +121,15 @@ func (w *World) Run() {
 			}
 		case p := <-w.playerChan:
 			{
-				// messages into world from players
+				// new player arrives
 				fmt.Println("arrrrg boink")
 				w.SendTiles(p)
 				p.OutMess <- []byte("this is a test")
 			}
 		case lc := <-w.loaderChan:
 			{
-				// messages into world from players
-				fmt.Println("send data to player to load sector")
+				// send object references to the client
+				//fmt.Println("send data to player to load sector")
 				w.LoadSector(lc)
 				//lc.OutMess <- []byte("load sector")
 			}

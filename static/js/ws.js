@@ -65,7 +65,7 @@
 					object.position.y = m.message.Pos.Y;
 					object.position.z = m.message.Pos.Z;
 					object.scale.x = 4
-					object.scale.y = 1
+					object.scale.y = 4
 					object.scale.z = 4
 					
 					scene.add( object );
