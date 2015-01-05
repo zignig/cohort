@@ -10,9 +10,11 @@ THREE.PointerLockControls = function ( camera ) {
 
 	var pitchObject = new THREE.Object3D();
 	pitchObject.add( camera );
+	pitchObject.rotation.x = -0.2; 
 
 	var yawObject = new THREE.Object3D();
 	yawObject.position.y = 60; 
+	yawObject.rotation.y = 4.0; 
 	yawObject.add( pitchObject );
 
 	var moveForward = false;
