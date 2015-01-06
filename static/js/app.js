@@ -108,10 +108,11 @@ function init() {
 	//scene.fog = new THREE.Fog( 0xFFFFFF, 0, 1024);
 
 	var light = new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 1.0 );
-	light.position.set( 0.5, 300, 0.75 );
+	light.position.set( 0.5, 10, 0.75 );
 	scene.add( light );
 
 	dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+	dirLight.castShadow = true;
 	dirLight.color.setHSL( 0.1, 1, 0.95 );
 	dirLight.position.set( -1, 150, 1 );
 	dirLight.position.multiplyScalar( 50 );
@@ -124,6 +125,7 @@ function init() {
 
 
 	renderer = new THREE.WebGLRenderer({ antialias: true });
+	renderer.shadowMapType = THREE.PCFSoftShadowMap;
 	renderer.setClearColor( 0xFFFFFF);
 	renderer.setSize( window.innerWidth, window.innerHeight );
 
