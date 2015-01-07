@@ -26,7 +26,8 @@ func (w *World) Load() (err error) {
 	// save the base ref for the world
 	w.ref = st
 	w.ws, err = w.cache.LoadWorldStore(data)
-	w.tiles = w.GenTiles()
+	//w.tiles = w.GenTiles()
+	w.tiles = w.MakeWorld(Sectors)
 	if err != nil {
 		fmt.Println("World doc resolve")
 		err = errors.New("world doc fail")

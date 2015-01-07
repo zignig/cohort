@@ -5,8 +5,10 @@ import (
 	"container/list"
 	"encoding/json"
 	"fmt"
-	"github.com/zignig/viewer/assets"
 	"strings"
+
+	"github.com/zignig/viewer/assets"
+	"github.com/zignig/viewer/world/generate"
 )
 
 // single tile
@@ -78,6 +80,15 @@ func (w *World) SendTile(p *Player, x int, y int) {
 	p.OutMess <- data
 }
 
+func (w *World) MakeWorld(s int) *tileGrid {
+	t := generate.Basic(s)
+	tg := &tileGrid{}
+	err := json.Unmarshal(t, tg)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return tg
+}
 func (w *World) GenTiles() *tileGrid {
 	tiles := w.config.Tile
 	st, err := w.cache.Ls(tiles + "/tiles")
