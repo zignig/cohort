@@ -1,6 +1,9 @@
 package generate
 
-import "math/rand"
+import (
+	"math/rand"
+	"time"
+)
 
 // procedural world builder
 // structures borrowed from
@@ -13,7 +16,8 @@ type Tile struct {
 }
 
 const (
-	Grass = iota
+	Empty = iota
+	Grass
 	Sand
 	Water
 	Road
@@ -22,9 +26,10 @@ const (
 )
 
 var TypeRunes = map[int]rune{
+	Empty:   ' ',
 	Grass:   '.',
 	Sand:    'S',
-	Water:   'W',
+	Water:   '#',
 	Road:    'A',
 	Rail:    'R',
 	Blocker: '☒',
@@ -51,11 +56,13 @@ func (w World) Tile(x, y int) *Tile {
 	return w[x][y]
 }
 
-func NewWorld(x, y int) *World {
+func NewWorld(x, y int, toType int) *World {
+	// reed rand on each new world
+	rand.Seed(time.Now().UTC().UnixNano())
 	w := &World{}
-	for i := 0; i < x; i++ {
-		for j := 0; j < y; j++ {
-			w.SetTile(&Tile{Kind: Blocker}, i, j)
+	for i := 0; i <= x; i++ {
+		for j := 0; j <= y; j++ {
+			w.SetTile(&Tile{Kind: toType}, i, j)
 		}
 	}
 	return w
@@ -65,6 +72,7 @@ type Modifier interface {
 	Mod(*Tile)
 }
 
+// run a function on each tile in the world
 func (w World) Scan(m Modifier) {
 	width := len(w)
 	height := len(w[0])
@@ -75,6 +83,13 @@ func (w World) Scan(m Modifier) {
 		}
 	}
 
+}
+
+// run scan multiple times
+func (w World) ReScan(m Modifier, repeat int) {
+	for i := 0; i <= repeat; i++ {
+		w.Scan(m)
+	}
 }
 
 // print out world rep
@@ -92,9 +107,15 @@ func (w World) String() (s string) {
 	return s
 }
 
-// empty modifier
-type Rander struct{}
+// random modifier
+type Rander struct {
+	prob   float64
+	toType int
+}
 
 func (r Rander) Mod(t *Tile) {
-	t.Kind = rand.Intn(len(TypeRunes))
+	f := rand.Float64()
+	if f < r.prob {
+		t.Kind = r.toType
+	}
 }
