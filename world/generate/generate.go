@@ -1,9 +1,6 @@
 package generate
 
-import (
-	"math/rand"
-	"time"
-)
+import "math/rand"
 
 // procedural world builder
 // structures borrowed from
@@ -58,7 +55,7 @@ func (w World) Tile(x, y int) *Tile {
 
 func NewWorld(x, y int, toType int) *World {
 	// reed rand on each new world
-	rand.Seed(time.Now().UTC().UnixNano())
+	//rand.Seed(time.Now().UTC().UnixNano())
 	w := &World{}
 	for i := 0; i <= x; i++ {
 		for j := 0; j <= y; j++ {
