@@ -6,5 +6,9 @@ import (
 )
 
 func TestTiles(t *testing.T) {
-	fmt.Println("hello")
+	w := NewWorld(20, 60)
+	fmt.Println(w)
+	r := Rander{}
+	w.Scan(r)
+	fmt.Println(w)
 }
