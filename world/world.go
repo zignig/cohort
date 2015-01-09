@@ -13,7 +13,7 @@ import (
 
 // make a world sectors * sectors big
 
-const Sectors = 8     // square layout X*X
+const Sectors = 12    // square layout X*X
 const SectorSize = 32 // prepare for tiles
 
 // 3 vector

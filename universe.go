@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 
 	"github.com/zignig/viewer/assets"
 	"github.com/zignig/viewer/util"
@@ -13,6 +14,7 @@ type universe struct {
 	world *world.World
 	h     *hub
 	cache *assets.Cache
+	templ *template.Template
 }
 
 func AndLetThereBeLight(config *util.Config) *universe {

@@ -2,15 +2,20 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
+	"os"
 
 	"github.com/GeertJohan/go.rice"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/op/go-logging"
 	"github.com/zignig/viewer/util"
 )
 
 var u *universe
+
+var log = logging.MustGetLogger("universe")
 
 func main() {
 	fmt.Println("Running Hub Server")
@@ -19,18 +24,22 @@ func main() {
 	fmt.Println(u)
 	// spin up the universe
 	u.run()
-
+	// set up the templates
 	r := gin.Default()
-	r.LoadHTMLFiles("index.html")
+	u.LoadTemplates()
+	r.SetHTMLTemplate(u.templ)
+
 	r.GET("/static/*filepath", u.staticFiles)
-	r.GET("/", func(c *gin.Context) {
-		c.HTML(200, "index.html", nil)
-	})
+	r.GET("/", u.index)
 	r.GET("/ws", func(c *gin.Context) {
 		u.wshandler(c.Writer, c.Request)
 	})
 	r.GET("/asset/*path", u.asset)
 	r.Run(":8090")
+}
+
+func (u *universe) index(c *gin.Context) {
+	c.HTML(200, "index.html", nil)
 }
 
 func (u *universe) asset(c *gin.Context) {
@@ -70,4 +79,37 @@ func (u *universe) wshandler(w http.ResponseWriter, r *http.Request) {
 	// todo  , move this to write pump and push a new player
 	go c.writePump()
 	c.readPump()
+}
+
+func (u *universe) LoadTemplates() {
+	templateBox, err := rice.FindBox("templates")
+	if err != nil {
+		log.Critical("template fail ", err)
+	}
+	// collect all the templates
+	fileList := []string{}
+	visit := func(path string, f os.FileInfo, inerr error) (err error) {
+		if f.IsDir() == false {
+			fileList = append(fileList, path)
+		}
+		return nil
+	}
+	walkerr := templateBox.Walk("", visit)
+	if walkerr != nil {
+		log.Critical("walk %s", err)
+	}
+	templates := template.New("")
+
+	for _, x := range fileList {
+		templateString, err := templateBox.String(x)
+		if err != nil {
+			log.Fatal(err)
+		}
+		_, err = templates.New(x).Parse(templateString)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	u.templ = templates
+
 }
