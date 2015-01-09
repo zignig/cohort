@@ -89,6 +89,7 @@ func (u *universe) LoadTemplates() {
 	// collect all the templates
 	fileList := []string{}
 	visit := func(path string, f os.FileInfo, inerr error) (err error) {
+		fmt.Println(path)
 		if f.IsDir() == false {
 			fileList = append(fileList, path)
 		}
@@ -99,7 +100,7 @@ func (u *universe) LoadTemplates() {
 		log.Critical("walk %s", err)
 	}
 	templates := template.New("")
-
+	fmt.Println(fileList)
 	for _, x := range fileList {
 		templateString, err := templateBox.String(x)
 		if err != nil {
@@ -111,5 +112,4 @@ func (u *universe) LoadTemplates() {
 		}
 	}
 	u.templ = templates
-
 }
