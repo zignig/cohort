@@ -109,13 +109,13 @@ func (w World) String() (s string) {
 
 // random modifier
 type Rander struct {
-	prob   float64
-	toType int
+	Prob   float64
+	ToType int
 }
 
 func (r Rander) Mod(t *Tile) {
 	f := rand.Float64()
-	if f < r.prob {
-		t.Kind = r.toType
+	if f < r.Prob {
+		t.Kind = r.ToType
 	}
 }
