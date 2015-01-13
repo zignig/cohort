@@ -2,13 +2,14 @@
 	
       c = new WebSocket(url);
       var interval ; 
+	  tileCache = {};
       send = function(data){
         c.send(data)
       }
 
       c.onmessage = function(msg){
 		var m = JSON.parse(msg.data);
-		console.log(m);
+		//console.log(m);
 		switch(m.class){
 			case "loader":
 				// load object
@@ -51,29 +52,37 @@
 				scene.add(floor);
 			
 			case "tile":
-				var onProgress = function ( xhr ) {
-					if ( xhr.lengthComputable ) {
-						var percentComplete = xhr.loaded / xhr.total * 100;
-						console.log( Math.round(percentComplete, 2) + '% downloaded' );
-					}
-				};
+				var onProgress = function ( xhr ) {	};
 				var onError = function ( xhr ) {};
+				
 				var loader = new THREE.OBJMTLLoader();
 				var path = 'asset/'+m.message.Ref+'/tiles/'+m.message.Name;
-				loader.load( path+'.obj', path+'.mtl', function ( object ) {
-					object.position.x = m.message.Pos.X;
-					object.position.y = m.message.Pos.Y;
-					object.position.z = m.message.Pos.Z;
-					object.scale.x = 4
-					object.scale.y = 4
-					object.scale.z = 4
-					
-					scene.add( object );
+				console.log(tileCache);
+				if ( m.message.Name in tileCache ) {
+					console.log(m.message.Name+" in cache")
+					cl = tileCache[m.message.Name].clone()
+					addObject(cl,m);
+				} else {
+					loader.load( path+'.obj', path+'.mtl', function ( object ) {
+						console.log("loader")
+						tileCache[m.message.Name] = object;
+						addObject(object,m);
 
-				}, onProgress, onError );
+					}, onProgress, onError );
+				}
 		}
       }
-
+	function addObject(object,m){
+		
+		object.position.x = m.message.Pos.X;
+		object.position.y = m.message.Pos.Y;
+		object.position.z = m.message.Pos.Z;
+		object.scale.x = 4
+		object.scale.y = 4
+		object.scale.z = 4
+		
+		scene.add( object );
+	}
       c.onopen = function(){
         interval = setInterval( 
           function(){ send(JSON.stringify({"class":"location","message":{"pos":controls.getObject().position,"rot":controls.getObject().quaternion,"uuid":controls.getObject().uuid}}))}

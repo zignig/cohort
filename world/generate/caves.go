@@ -5,7 +5,7 @@ type Caver struct{}
 
 func (r Caver) Mod(t *Tile) {
 	c := t.NeighbourCount()
-	if c < 4 {
+	if c <= 4 {
 		t.Kind = Empty
 	}
 	if c > 5 {
