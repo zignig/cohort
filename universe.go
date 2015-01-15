@@ -15,6 +15,7 @@ type universe struct {
 	h     *hub
 	cache *assets.Cache
 	templ *template.Template
+	store *Store // local sqlite sotre
 }
 
 func AndLetThereBeLight(config *util.Config) *universe {
@@ -22,6 +23,7 @@ func AndLetThereBeLight(config *util.Config) *universe {
 	u := &universe{}
 	u.conf = config
 	u.cache = assets.NewCache()
+	u.store = NewStore("")
 	u.world = world.NewWorld(config, u.cache)
 	u.h = NewHub(u.world)
 	return u

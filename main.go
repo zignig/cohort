@@ -20,6 +20,7 @@ var log = logging.MustGetLogger("universe")
 func main() {
 	fmt.Println("Running Hub Server")
 	conf := util.GetConfig("universe.toml")
+	// create the local datastore
 	u = AndLetThereBeLight(conf)
 	fmt.Println(u)
 	// spin up the universe
