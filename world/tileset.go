@@ -76,7 +76,7 @@ func (w *World) SendTile(p *Player, x int, y int) {
 		fmt.Println("floor fail ", err)
 		return
 	}
-	fmt.Println(string(data))
+	//fmt.Println(string(data))
 	p.OutMess <- data
 }
 
