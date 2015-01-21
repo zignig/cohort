@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/zignig/viewer/world"
+	"github.com/zignig/cohort/world"
 )
 
 // player hub

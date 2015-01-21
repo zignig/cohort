@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"html/template"
 
-	"github.com/zignig/viewer/assets"
-	"github.com/zignig/viewer/util"
-	"github.com/zignig/viewer/world"
+	"github.com/zignig/cohort/assets"
+	"github.com/zignig/cohort/util"
+	"github.com/zignig/cohort/world"
 )
 
 type universe struct {

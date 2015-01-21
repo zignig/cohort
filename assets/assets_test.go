@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/zignig/viewer/util"
+	"github.com/zignig/cohort/util"
 )
 
 func TestTiles(t *testing.T) {

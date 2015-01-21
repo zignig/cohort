@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/beefsack/go-astar"
-	"github.com/zignig/viewer/world/generate"
+	"github.com/zignig/cohort/world/generate"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package world
 import (
 	"fmt"
 	//	"time"
-	"github.com/zignig/viewer/assets"
+	"github.com/zignig/cohort/assets"
 )
 
 //

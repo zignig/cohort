@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/op/go-logging"
-	"github.com/zignig/viewer/util"
+	"github.com/zignig/cohort/util"
 )
 
 var u *universe

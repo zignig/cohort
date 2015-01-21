@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/zignig/viewer/assets"
-	"github.com/zignig/viewer/world/generate"
+	"github.com/zignig/cohort/assets"
+	"github.com/zignig/cohort/world/generate"
 )
 
 // single tile

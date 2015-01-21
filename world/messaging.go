@@ -3,7 +3,7 @@ package world
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/zignig/viewer/assets"
+	"github.com/zignig/cohort/assets"
 )
 
 // message from player

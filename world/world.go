@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/zignig/viewer/assets"
-	"github.com/zignig/viewer/util"
+	"github.com/zignig/cohort/assets"
+	"github.com/zignig/cohort/util"
 )
 
 // world structures

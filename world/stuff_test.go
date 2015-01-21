@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/zignig/viewer/assets"
-	"github.com/zignig/viewer/util"
+	"github.com/zignig/cohort/assets"
+	"github.com/zignig/cohort/util"
 )
 
 func TestTiles(t *testing.T) {
