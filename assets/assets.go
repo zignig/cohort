@@ -22,7 +22,12 @@ type Caches interface {
 }
 
 type dataBlock []byte
-type Ref string
+
+//type Ref map[string]string
+type Ref struct {
+	Key     string
+	Message string
+}
 
 type Cache struct {
 	name      string
@@ -81,15 +86,19 @@ func (c *Cache) Resolve(name string) (ref string, err error) {
 		fmt.Println("resolve error ", err)
 		return "", err
 	}
-	var refObj *Ref
+	refObj := &Ref{}
 	fmt.Println("start unmarshall")
 	merr := json.Unmarshal(data, &refObj)
-	fmt.Println(string(data))
+	fmt.Println(refObj)
 	if merr != nil {
 		fmt.Println("unmarshall error ", merr)
 		return "", err
 	}
-	ref = string(*refObj)
+	if refObj.Key == "" {
+		fmt.Println("key error ", merr)
+		return "", err
+	}
+	ref = refObj.Key
 	c.nameLock.Lock()
 	fmt.Println("add name ", name, " to cache")
 	c.nameCache[name] = ref
