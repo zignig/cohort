@@ -152,6 +152,25 @@ func (c *Cache) Get(s string, a string) (data dataBlock, err error) {
 	return data, err
 }
 
+func (c *Cache) Listing(path string) (items []string, err error) {
+	resp, err := c.Ls(path)
+	li := &Listing{}
+	if err != nil {
+		return items, err
+	}
+	fmt.Println("start unmarshall")
+	merr := json.Unmarshal(resp, &li)
+	if merr != nil {
+		fmt.Println("Unmarshall error ", err)
+		return items, merr
+	}
+	for _, it := range li.Objects[0].Links {
+		//fmt.Println("listing ", i, it)
+		items = append(items, it.Name)
+	}
+	return items, nil
+}
+
 type Item struct {
 	Name string
 	Hash string
