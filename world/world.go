@@ -128,6 +128,8 @@ func (w *World) Run() {
 				w.SendFloor(p, 0, 0)
 				p.gry = 2
 				w.LoadSector(p)
+				p.gry = 3
+				w.LoadSector(p)
 			}
 		case lc := <-w.loaderChan:
 			{

@@ -31,7 +31,7 @@
 				light.position.set( 1, 1, 1 );
 				scene.add( light );
 
-				light = new THREE.DirectionalLight( 0x002288 );
+				light = new THREE.DirectionalLight( 0xffffff);
 				light.position.set( -1, -1, -1 );
 				scene.add( light );
 
@@ -44,7 +44,7 @@
 				renderer = new THREE.WebGLRenderer( { antialias: false } );
 				renderer.setClearColor( 0xAAAAAA );
 				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight  - 20);
+				//renderer.setSize( window.innerWidth, window.innerHeight  - 20);
 
 				container = document.getElementById( 'container' );
 				container.appendChild( renderer.domElement );
@@ -62,7 +62,7 @@
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 
-				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setSize( window.innerWidth, window.innerHeight);
 
 				render();
 
