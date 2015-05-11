@@ -1,7 +1,7 @@
       url = 'ws://'+location.host+'/ws';
-	
+
       c = new WebSocket(url);
-      var interval ; 
+      var interval ;
 	  tileCache = {};
       send = function(data){
         c.send(data)
@@ -32,11 +32,11 @@
 					} );
 					break;
 			case "floor":
-				
+
 				// floor
 				// note: 4x4 checkboard pattern scaled so that each square is 25 by 25 pixels.
 				floorTexture = new THREE.ImageUtils.loadTexture( 'static/images/dirt.jpg' );
-				floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+				floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
 				floorTexture.repeat.set( 10, 10 );
 				// DoubleSide: render texture on both sides of mesh
 				floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
@@ -50,11 +50,11 @@
 				floor.rotation.x = Math.PI / 2;
 				console.log(floor);
 				scene.add(floor);
-			
+
 			case "tile":
 				var onProgress = function ( xhr ) {	};
 				var onError = function ( xhr ) {};
-				
+
 				var loader = new THREE.OBJMTLLoader();
 				var path = 'asset/'+m.message.Ref+'/tiles/'+m.message.Name;
 				console.log(tileCache);
@@ -72,23 +72,15 @@
 				}
 		}
       }
+
 	function addObject(object,m){
-		
+
 		object.position.x = m.message.Pos.X;
 		object.position.y = m.message.Pos.Y;
 		object.position.z = m.message.Pos.Z;
 		object.scale.x = 4
 		object.scale.y = 4
 		object.scale.z = 4
-		
+
 		scene.add( object );
-	}
-      c.onopen = function(){
-        interval = setInterval( 
-          function(){ send(JSON.stringify({"class":"location","message":{"pos":controls.getObject().position,"rot":controls.getObject().quaternion,"uuid":controls.getObject().uuid}}))}
-        , 1000)
-      }
-      
-	c.onlcose = function(){
-		clearInterval(interval);
 	}

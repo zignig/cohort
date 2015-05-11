@@ -124,8 +124,10 @@ func (w *World) Run() {
 			{
 				// new player arrives
 				fmt.Println("arrrrg boink")
-				w.SendTiles(p)
-				p.OutMess <- []byte("this is a test")
+				// w.SendTiles(p)
+				w.SendFloor(p, 0, 0)
+				p.gry = 2
+				w.LoadSector(p)
 			}
 		case lc := <-w.loaderChan:
 			{
