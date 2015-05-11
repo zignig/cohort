@@ -26,6 +26,7 @@ type dataBlock []byte
 //type Ref map[string]string
 type Ref struct {
 	Key     string
+	Path    string
 	Message string
 }
 
@@ -87,6 +88,7 @@ func (c *Cache) Resolve(name string) (ref string, err error) {
 		return "", err
 	}
 	refObj := &Ref{}
+	fmt.Println(data)
 	fmt.Println("start unmarshall")
 	merr := json.Unmarshal(data, &refObj)
 	fmt.Println(refObj)
@@ -94,11 +96,11 @@ func (c *Cache) Resolve(name string) (ref string, err error) {
 		fmt.Println("unmarshall error ", merr)
 		return "", err
 	}
-	if refObj.Key == "" {
+	if refObj.Path == "" {
 		fmt.Println("key error ", merr)
 		return "", err
 	}
-	ref = refObj.Key
+	ref = refObj.Path
 	c.nameLock.Lock()
 	fmt.Println("add name ", name, " to cache")
 	c.nameCache[name] = ref

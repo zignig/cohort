@@ -9,94 +9,6 @@ var raycaster;
 var blocker = document.getElementById( 'blocker' );
 var instructions = document.getElementById( 'instructions' );
 
-// http://www.html5rocks.com/en/tutorials/pointerlock/intro/
-
-var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-
-if ( havePointerLock ) {
-
-	var element = document.body;
-
-	var pointerlockchange = function ( event ) {
-
-		if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
-
-			controls.enabled = true;
-
-			blocker.style.display = 'none';
-
-		} else {
-
-			controls.enabled = false;
-
-			blocker.style.display = '-webkit-box';
-			blocker.style.display = '-moz-box';
-			blocker.style.display = 'box';
-
-			instructions.style.display = '';
-
-		}
-
-	}
-
-	var pointerlockerror = function ( event ) {
-
-		instructions.style.display = '';
-
-	}
-
-	// Hook pointer lock state change events
-	document.addEventListener( 'pointerlockchange', pointerlockchange, false );
-	document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
-	document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
-
-	document.addEventListener( 'pointerlockerror', pointerlockerror, false );
-	document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
-	document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
-
-	instructions.addEventListener( 'click', function ( event ) {
-
-		instructions.style.display = 'none';
-
-		// Ask the browser to lock the pointer
-		element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
-
-		if ( /Firefox/i.test( navigator.userAgent ) ) {
-
-			var fullscreenchange = function ( event ) {
-
-				if ( document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element ) {
-
-					document.removeEventListener( 'fullscreenchange', fullscreenchange );
-					document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
-
-					element.requestPointerLock();
-				}
-
-			}
-
-			document.addEventListener( 'fullscreenchange', fullscreenchange, false );
-			document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
-
-			element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
-
-			//element.requestFullscreen();
-			element.requestPointerLock();
-
-		} else {
-
-			element.requestPointerLock();
-
-		}
-
-	}, false );
-
-} else {
-
-	instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
-
-}
-
 init();
 animate();
 
@@ -117,11 +29,11 @@ function init() {
 	dirLight.position.multiplyScalar( 50 );
 	scene.add( dirLight );
 
-	controls = new THREE.PointerLockControls( camera );
-	scene.add( controls.getObject() );
+    controls = new THREE.OrbitControls( camera );
+    controls.damping = 0.2;
+    controls.addEventListener( 'change', render );
 
 	raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 30 );
-
 
 	//renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer = new THREE.WebGLRenderer();
@@ -149,21 +61,29 @@ function animate() {
 
 	requestAnimationFrame( animate );
 
-	controls.isOnObject( false );
+	//controls.isOnObject( false );
 
-	raycaster.ray.origin.copy( controls.getObject().position );
-	raycaster.ray.origin.y -= 10;
+	//raycaster.ray.origin.copy( controls.getObject().position );
+	//raycaster.ray.origin.y -= 10;
 
-	var intersections = raycaster.intersectObjects( objects );
+	//var intersections = raycaster.intersectObjects( objects );
 
-	if ( intersections.length > 0 ) {
+	//if ( intersections.length > 0 ) {
 
-		controls.isOnObject( true );
+	//	controls.isOnObject( true );
 
-	}
+	//}
 
-	controls.update();
+	//controls.update();
 
 	renderer.render( scene, camera );
 
 }
+
+            function render() {
+
+                                renderer.render( scene, camera );
+                                                stats.update();
+
+                                                            }
+
